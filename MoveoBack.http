@@ -1,0 +1,6 @@
+@MoveoBack_HostAddress = http://localhost:5274
+
+GET {{MoveoBack_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

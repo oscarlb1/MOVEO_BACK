@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MoveoBack.Data;
+using MoveoBack.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,8 +33,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<MoveoBack.Repositories.IUserRepository, MoveoBack.Repositories.UserRepository>();
-builder.Services.AddScoped<MoveoBack.Services.IUserService, MoveoBack.Services.UserService>();
+builder.Services.AddScoped<MoveoBack.Repositories.IUsuarioRepository, MoveoBack.Repositories.UsuarioRepository>();
+builder.Services.AddScoped<MoveoBack.Services.IUsuarioService, MoveoBack.Services.UsuarioService>();
 builder.Services.AddScoped<MoveoBack.Services.IAuthService, MoveoBack.Services.AuthService>();
 
 var app = builder.Build();

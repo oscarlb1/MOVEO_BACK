@@ -11,69 +11,69 @@ namespace MoveoBack.Services;
 
 public class AuthService : IAuthService
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUsuarioRepository _userRepository;
     private readonly IConfiguration _configuration;
 
-    public AuthService(IUserRepository userRepository, IConfiguration configuration)
+    public AuthService(IUsuarioRepository userRepository, IConfiguration configuration)
     {
         _userRepository = userRepository;
         _configuration = configuration;
     }
 
-    public async Task<AuthResponseDto> RegisterAsync(UserRegisterDto registerDto)
+    public async Task<RespuestaAuthDto> RegistrarAsync(RegistroUsuarioDto registerDto)
     {
-        if (await _userRepository.GetByEmailAsync(registerDto.Email) != null)
+        if (await _userRepository.ObtenerPorEmailAsync(registerDto.Email) != null)
         {
             throw new Exception("User already exists");
         }
 
-        var user = new User
+        var user = new Usuario
         {
-            Name = registerDto.Name,
+            Nombre = registerDto.Nombre,
             Email = registerDto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
         };
 
-        var refreshToken = GenerateRefreshToken(user.Id);
+        var refreshToken = GenerarTokenDeRefresco(user.Id);
         user.RefreshTokens.Add(refreshToken);
 
-        await _userRepository.AddAsync(user);
+        await _userRepository.AgregarAsync(user);
 
-        var accessToken = GenerateAccessToken(user);
+        var accessToken = GenerarTokenDeAcceso(user);
 
-        return new AuthResponseDto
+        return new RespuestaAuthDto
         {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken.Token
+            TokenDeAcceso = accessToken,
+            TokenDeRefresco = refreshToken.Token
         };
     }
 
-    public async Task<AuthResponseDto> LoginAsync(UserLoginDto loginDto)
+    public async Task<RespuestaAuthDto> IniciarSesionAsync(LoginUsuarioDto loginDto)
     {
-        var user = await _userRepository.GetByEmailAsync(loginDto.Email);
+        var user = await _userRepository.ObtenerPorEmailAsync(loginDto.Email);
         if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
         {
             throw new Exception("Invalid credentials");
         }
 
-        var accessToken = GenerateAccessToken(user);
-        var refreshToken = GenerateRefreshToken(user.Id);
+        var accessToken = GenerarTokenDeAcceso(user);
+        var refreshToken = GenerarTokenDeRefresco(user.Id);
 
         // Revoke old refresh tokens (optional, but good practice to clean up or rotate)
         // For this implementation, we just add a new one.
         user.RefreshTokens.Add(refreshToken);
-        await _userRepository.SaveChangesAsync();
+        await _userRepository.GuardarCambiosAsync();
 
-        return new AuthResponseDto
+        return new RespuestaAuthDto
         {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken.Token
+            TokenDeAcceso = accessToken,
+            TokenDeRefresco = refreshToken.Token
         };
     }
 
-    public async Task<AuthResponseDto> RefreshTokenAsync(string token)
+    public async Task<RespuestaAuthDto> RefrescarTokenAsync(string token)
     {
-        var user = await _userRepository.GetByRefreshTokenAsync(token);
+        var user = await _userRepository.ObtenerPorTokenDeRefrescoAsync(token);
         if (user == null) throw new Exception("Invalid token");
 
         var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
@@ -84,21 +84,21 @@ public class AuthService : IAuthService
         refreshToken.Revoked = DateTime.UtcNow;
 
         // Generate new tokens
-        var newRefreshToken = GenerateRefreshToken(user.Id);
+        var newRefreshToken = GenerarTokenDeRefresco(user.Id);
         user.RefreshTokens.Add(newRefreshToken);
-        
-        await _userRepository.SaveChangesAsync();
 
-        var accessToken = GenerateAccessToken(user);
+        await _userRepository.GuardarCambiosAsync();
 
-        return new AuthResponseDto
+        var accessToken = GenerarTokenDeAcceso(user);
+
+        return new RespuestaAuthDto
         {
-            AccessToken = accessToken,
-            RefreshToken = newRefreshToken.Token
+            TokenDeAcceso = accessToken,
+            TokenDeRefresco = newRefreshToken.Token
         };
     }
 
-    private string GenerateAccessToken(User user)
+    private string GenerarTokenDeAcceso(Usuario user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -121,12 +121,12 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private RefreshToken GenerateRefreshToken(int userId)
+    private RefreshToken GenerarTokenDeRefresco(int userId)
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
-        
+
         return new RefreshToken
         {
             Token = Convert.ToBase64String(randomNumber),

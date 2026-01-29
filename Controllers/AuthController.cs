@@ -15,12 +15,12 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpPost("register")]
-    public async Task<ActionResult<AuthResponseDto>> Register(UserRegisterDto registerDto)
+    [HttpPost("registrar")]
+    public async Task<ActionResult<RespuestaAuthDto>> Registrar(RegistroUsuarioDto registerDto)
     {
         try
         {
-            var result = await _authService.RegisterAsync(registerDto);
+            var result = await _authService.RegistrarAsync(registerDto);
             return Ok(result);
         }
         catch (Exception ex)
@@ -29,12 +29,12 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpPost("login")]
-    public async Task<ActionResult<AuthResponseDto>> Login(UserLoginDto loginDto)
+    [HttpPost("iniciar-sesion")]
+    public async Task<ActionResult<RespuestaAuthDto>> IniciarSesion(LoginUsuarioDto loginDto)
     {
         try
         {
-            var result = await _authService.LoginAsync(loginDto);
+            var result = await _authService.IniciarSesionAsync(loginDto);
             return Ok(result);
         }
         catch (Exception ex)
@@ -43,12 +43,12 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpPost("refresh-token")]
-    public async Task<ActionResult<AuthResponseDto>> RefreshToken(RefreshTokenRequestDto requestDto)
+    [HttpPost("refrescar-token")]
+    public async Task<ActionResult<RespuestaAuthDto>> RefrescarToken(SolicitudRefrescarTokenDto requestDto)
     {
         try
         {
-            var result = await _authService.RefreshTokenAsync(requestDto.RefreshToken);
+            var result = await _authService.RefrescarTokenAsync(requestDto.TokenDeRefresco);
             return Ok(result);
         }
         catch (Exception ex)

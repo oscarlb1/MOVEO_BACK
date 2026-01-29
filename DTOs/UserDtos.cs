@@ -1,14 +1,14 @@
 namespace MoveoBack.DTOs;
 
-public class UserDto
+public class UsuarioDto
 {
     public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
 
-public class CreateUserDto
+public class CrearUsuarioDto
 {
-    public string Name { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }

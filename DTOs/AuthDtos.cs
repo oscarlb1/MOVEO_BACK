@@ -1,25 +1,25 @@
 namespace MoveoBack.DTOs;
 
-public class UserRegisterDto
+public class RegistroUsuarioDto
 {
-    public string Name { get; set; } = string.Empty;
+    public string Nombre { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 }
 
-public class UserLoginDto
+public class LoginUsuarioDto
 {
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 }
 
-public class AuthResponseDto
+public class RespuestaAuthDto
 {
-    public string AccessToken { get; set; } = string.Empty;
-    public string RefreshToken { get; set; } = string.Empty;
+    public string TokenDeAcceso { get; set; } = string.Empty;
+    public string TokenDeRefresco { get; set; } = string.Empty;
 }
 
-public class RefreshTokenRequestDto
+public class SolicitudRefrescarTokenDto
 {
-    public string RefreshToken { get; set; } = string.Empty;
+    public string TokenDeRefresco { get; set; } = string.Empty;
 }

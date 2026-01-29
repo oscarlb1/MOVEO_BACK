@@ -14,5 +14,5 @@ public class RefreshToken
 
     public int UserId { get; set; }
     [JsonIgnore]
-    public User? User { get; set; }
+    public Usuario? Usuario { get; set; }
 }

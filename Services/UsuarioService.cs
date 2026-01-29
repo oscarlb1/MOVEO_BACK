@@ -42,7 +42,13 @@ public class UsuarioService : IUsuarioService
         var user = new Usuario
         {
             Nombre = createUserDto.Nombre,
-            Email = createUserDto.Email
+            Email = createUserDto.Email,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password),
+            Rol = "CONDUCTOR",
+            DebeCambiarPassword = true,
+            FechaRegistro = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         await _userRepository.AgregarAsync(user);

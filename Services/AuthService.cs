@@ -31,7 +31,12 @@ public class AuthService : IAuthService
         {
             Nombre = registerDto.Nombre,
             Email = registerDto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password)
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+            Rol = "CONDUCTOR",
+            DebeCambiarPassword = true,
+            FechaRegistro = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
 
         var refreshToken = GenerarTokenDeRefresco(user.Id);
@@ -81,10 +86,11 @@ public class AuthService : IAuthService
         if (!refreshToken.IsActive) throw new Exception("Invalid token");
 
         // Revoke current token
-        refreshToken.Revoked = DateTime.UtcNow;
+        refreshToken.Revoked = true;
 
         // Generate new tokens
         var newRefreshToken = GenerarTokenDeRefresco(user.Id);
+        newRefreshToken.FamilyId = refreshToken.FamilyId;
         user.RefreshTokens.Add(newRefreshToken);
 
         await _userRepository.GuardarCambiosAsync();
@@ -132,7 +138,8 @@ public class AuthService : IAuthService
             Token = Convert.ToBase64String(randomNumber),
             Expires = DateTime.UtcNow.AddDays(7),
             Created = DateTime.UtcNow,
-            UserId = userId
+            UserId = userId,
+            FamilyId = Guid.NewGuid().ToString()
         };
     }
 }

@@ -1,8 +1,8 @@
-using MoveoBack.DTOs;
-using MoveoBack.Models;
-using MoveoBack.Repositories;
+using Moveo.Modelos.DTOs;
+using Moveo.Modelos.Entidades;
+using Moveo.AccesoDatos.Repositorios;
 
-namespace MoveoBack.Services;
+namespace Moveo.Negocio.Servicios;
 
 public class UsuarioService : IUsuarioService
 {

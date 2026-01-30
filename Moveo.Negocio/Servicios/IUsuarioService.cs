@@ -1,6 +1,6 @@
-using MoveoBack.DTOs;
+using Moveo.Modelos.DTOs;
 
-namespace MoveoBack.Services;
+namespace Moveo.Negocio.Servicios;
 
 public interface IUsuarioService
 {

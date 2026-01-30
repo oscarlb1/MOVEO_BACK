@@ -1,4 +1,4 @@
-namespace MoveoBack.DTOs;
+namespace Moveo.Modelos.DTOs;
 
 public class RegistroUsuarioDto
 {

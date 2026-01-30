@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MoveoBack.Models;
+namespace Moveo.Modelos.Entidades;
 
 [Table("usuario")]
 public class Usuario

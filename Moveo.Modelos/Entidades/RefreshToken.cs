@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace MoveoBack.Models;
+namespace Moveo.Modelos.Entidades;
 
 [Table("refresh_tokens")]
 public class RefreshToken

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using MoveoBack.Models;
+using Moveo.Modelos.Entidades;
+using Moveo.AccesoDatos.Data;
 
-namespace MoveoBack.Repositories;
+namespace Moveo.AccesoDatos.Repositorios;
 
 public class UsuarioRepository : IUsuarioRepository
 {

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace MoveoBack.Models;
+using Moveo.Modelos.Entidades;
+
+namespace Moveo.AccesoDatos.Data;
 
 public class AppDbContext : DbContext
 {

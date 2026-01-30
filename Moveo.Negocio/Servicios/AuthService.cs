@@ -2,12 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MoveoBack.DTOs;
-using MoveoBack.Models;
-using MoveoBack.Repositories;
+using Moveo.Modelos.DTOs;
+using Moveo.Modelos.Entidades;
+using Moveo.AccesoDatos.Repositorios;
 
-namespace MoveoBack.Services;
+namespace Moveo.Negocio.Servicios;
 
 public class AuthService : IAuthService
 {

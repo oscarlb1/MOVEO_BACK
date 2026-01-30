@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MoveoBack.Models;
+using Moveo.AccesoDatos.Data;
+using Moveo.Modelos.Entidades;
+using Moveo.Negocio.Servicios;
+using Moveo.AccesoDatos.Repositorios;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,9 +36,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<MoveoBack.Repositories.IUsuarioRepository, MoveoBack.Repositories.UsuarioRepository>();
-builder.Services.AddScoped<MoveoBack.Services.IUsuarioService, MoveoBack.Services.UsuarioService>();
-builder.Services.AddScoped<MoveoBack.Services.IAuthService, MoveoBack.Services.AuthService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

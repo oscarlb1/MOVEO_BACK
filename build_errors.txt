@@ -1,8 +1,0 @@
-﻿Versi├│n de MSBuild 17.8.31+af11d4f25 para .NET
-C:\Users\HOME\Documents\GitHub\MOVEO_BACK\Models\RefreshToken.cs(17,12): error CS0246: El nombre del tipo o del espacio de nombres 'User' no se encontr├│ (┬┐falta una directiva using o una referencia de ensamblado?) [C:\Users\HOME\Documents\GitHub\MOVEO_BACK\MoveoBack.csproj]
-
-ERROR al compilar.
-    0 Advertencia(s)
-    1 Errores
-
-Tiempo transcurrido 00:00:01.00

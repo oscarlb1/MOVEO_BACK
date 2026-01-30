@@ -1,8 +1,0 @@
-﻿Versi├│n de MSBuild 17.8.31+af11d4f25 para .NET
-C:\Users\HOME\Documents\GitHub\MOVEO_BACK\Models\AppDbContext.cs(18,56): error CS1061: "Usuario" no contiene una definici├│n para "Name" ni un m├®todo de extensi├│n accesible "Name" que acepte un primer argumento del tipo "Usuario" (┬┐falta alguna directiva using o una referencia de ensamblado?) [C:\Users\HOME\Documents\GitHub\MOVEO_BACK\MoveoBack.csproj]
-
-ERROR al compilar.
-    0 Advertencia(s)
-    1 Errores
-
-Tiempo transcurrido 00:00:01.06

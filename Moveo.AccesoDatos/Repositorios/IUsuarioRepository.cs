@@ -1,6 +1,6 @@
-using MoveoBack.Models;
+using Moveo.Modelos.Entidades;
 
-namespace MoveoBack.Repositories;
+namespace Moveo.AccesoDatos.Repositorios;
 
 public interface IUsuarioRepository
 {

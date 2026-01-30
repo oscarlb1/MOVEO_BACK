@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using MoveoBack.DTOs;
-using MoveoBack.Services;
+using Moveo.Modelos.DTOs;
+using Moveo.Negocio.Servicios;
 
-namespace MoveoBack.Controllers;
+namespace Moveo.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -10,10 +10,12 @@ public class AppDbContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Vehiculo> Vehiculos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Usuario>().ToTable("usuario");
+        // ... (existing mappings)
         modelBuilder.Entity<Usuario>().Property(u => u.Id).HasColumnName("id");
         modelBuilder.Entity<Usuario>().Property(u => u.Nombre).HasColumnName("nombre");
         modelBuilder.Entity<Usuario>().Property(u => u.Email).HasColumnName("email");
@@ -37,5 +39,18 @@ public class AppDbContext : DbContext
             .HasOne(t => t.Usuario)
             .WithMany(u => u.RefreshTokens)
             .HasForeignKey(t => t.UserId);
+
+        modelBuilder.Entity<Vehiculo>().ToTable("vehiculo");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.Id).HasColumnName("id");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.Matricula).HasColumnName("matricula");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.MarcaModelo).HasColumnName("marcamodelo");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.CapacidadCarga).HasColumnName("capacidadcarga");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.ConsumoMedio).HasColumnName("consumomedio");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.KilometrajeActual).HasColumnName("kilometrajeactual");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.FechaUltimaRevision).HasColumnName("fechaultimarevision");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.CreatedAt).HasColumnName("created_at");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.UpdatedAt).HasColumnName("updated_at");
+        modelBuilder.Entity<Vehiculo>().Property(v => v.DeletedAt).HasColumnName("deleted_at");
     }
 }

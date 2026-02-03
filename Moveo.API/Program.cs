@@ -38,11 +38,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Repositories
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IMantenimientoRepository, MantenimientoRepository>();
+builder.Services.AddScoped<IRutaRepository, RutaRepository>();
+builder.Services.AddScoped<IEntregaRepository, EntregaRepository>();
+builder.Services.AddScoped<IHistorialUbicacionRepository, HistorialUbicacionRepository>();
+builder.Services.AddScoped<IEstadisticaUsuarioRepository, EstadisticaUsuarioRepository>();
+builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
+builder.Services.AddScoped<IEstadoSesionRepository, EstadoSesionRepository>();
+
+// Services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IVehiculoService, VehiculoService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IMantenimientoService, MantenimientoService>();
+builder.Services.AddScoped<IRutaService, RutaService>();
+builder.Services.AddScoped<IEntregaService, EntregaService>();
+builder.Services.AddScoped<IHistorialUbicacionService, HistorialUbicacionService>();
+builder.Services.AddScoped<IEstadisticaUsuarioService, EstadisticaUsuarioService>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
+builder.Services.AddScoped<IEstadoSesionService, EstadoSesionService>();
+
 
 var app = builder.Build();
 

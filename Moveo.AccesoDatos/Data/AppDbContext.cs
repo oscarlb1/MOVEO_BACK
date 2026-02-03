@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using Moveo.Modelos.Entidades;
 
 namespace Moveo.AccesoDatos.Data;
@@ -11,11 +10,18 @@ public class AppDbContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Vehiculo> Vehiculos { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Mantenimiento> Mantenimientos { get; set; }
+    public DbSet<Ruta> Rutas { get; set; }
+    public DbSet<Entrega> Entregas { get; set; }
+    public DbSet<HistorialUbicacion> HistorialUbicaciones { get; set; }
+    public DbSet<EstadisticaUsuario> EstadisticasUsuarios { get; set; }
+    public DbSet<Notificacion> Notificaciones { get; set; }
+    public DbSet<EstadoSesion> EstadoSesiones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Usuario>().ToTable("usuario");
-        // ... (existing mappings)
         modelBuilder.Entity<Usuario>().Property(u => u.Id).HasColumnName("id");
         modelBuilder.Entity<Usuario>().Property(u => u.Nombre).HasColumnName("nombre");
         modelBuilder.Entity<Usuario>().Property(u => u.Email).HasColumnName("email");
@@ -52,5 +58,71 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Vehiculo>().Property(v => v.CreatedAt).HasColumnName("created_at");
         modelBuilder.Entity<Vehiculo>().Property(v => v.UpdatedAt).HasColumnName("updated_at");
         modelBuilder.Entity<Vehiculo>().Property(v => v.DeletedAt).HasColumnName("deleted_at");
+
+        // Nuevas entidades
+        modelBuilder.Entity<Cliente>().ToTable("cliente");
+        modelBuilder.Entity<Cliente>().Property(c => c.Id).HasColumnName("id");
+        modelBuilder.Entity<Cliente>().Property(c => c.NombreEmpresa).HasColumnName("nombreempresa");
+        modelBuilder.Entity<Cliente>().Property(c => c.Direccion).HasColumnName("direccion");
+        modelBuilder.Entity<Cliente>().Property(c => c.Latitud).HasColumnName("latitud");
+        modelBuilder.Entity<Cliente>().Property(c => c.Longitud).HasColumnName("longitud");
+        modelBuilder.Entity<Cliente>().Property(c => c.Telefono).HasColumnName("telefono");
+
+        modelBuilder.Entity<Mantenimiento>().ToTable("mantenimiento");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.Id).HasColumnName("id");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.VehiculoId).HasColumnName("vehiculoid");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.FechaServicio).HasColumnName("fechaservicio");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.TipoMantenimiento).HasColumnName("tipomantenimiento");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.KilometrajeServicio).HasColumnName("kilometrajeservicio");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.Coste).HasColumnName("coste");
+
+        modelBuilder.Entity<Ruta>().ToTable("ruta");
+        modelBuilder.Entity<Ruta>().Property(r => r.Id).HasColumnName("id");
+        modelBuilder.Entity<Ruta>().Property(r => r.Fecha).HasColumnName("fecha");
+        modelBuilder.Entity<Ruta>().Property(r => r.ConductorId).HasColumnName("conductorid");
+        modelBuilder.Entity<Ruta>().Property(r => r.VehiculoId).HasColumnName("vehiculoid");
+        modelBuilder.Entity<Ruta>().Property(r => r.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Ruta>().Property(r => r.DistanciaTotalEstimada).HasColumnName("distanciatotalestimada");
+
+        modelBuilder.Entity<Entrega>().ToTable("entrega");
+        modelBuilder.Entity<Entrega>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<Entrega>().Property(e => e.RutaId).HasColumnName("rutaid");
+        modelBuilder.Entity<Entrega>().Property(e => e.ClienteId).HasColumnName("clienteid");
+        modelBuilder.Entity<Entrega>().Property(e => e.OrdenParada).HasColumnName("ordenparada");
+        modelBuilder.Entity<Entrega>().Property(e => e.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Entrega>().Property(e => e.CodigoQR).HasColumnName("codigoqr");
+        modelBuilder.Entity<Entrega>().Property(e => e.FirmaDigitalUrl).HasColumnName("firmadigitalurl");
+        modelBuilder.Entity<Entrega>().Property(e => e.FotoUrl).HasColumnName("fotourl");
+        modelBuilder.Entity<Entrega>().Property(e => e.Notas).HasColumnName("notas");
+        modelBuilder.Entity<Entrega>().Property(e => e.HoraEntregaReal).HasColumnName("horaentregareal");
+
+        modelBuilder.Entity<HistorialUbicacion>().ToTable("historialubicacion");
+        modelBuilder.Entity<HistorialUbicacion>().Property(h => h.Id).HasColumnName("id");
+        modelBuilder.Entity<HistorialUbicacion>().Property(h => h.RutaId).HasColumnName("rutaid");
+        modelBuilder.Entity<HistorialUbicacion>().Property(h => h.Latitud).HasColumnName("latitud");
+        modelBuilder.Entity<HistorialUbicacion>().Property(h => h.Longitud).HasColumnName("longitud");
+        modelBuilder.Entity<HistorialUbicacion>().Property(h => h.FechaHora).HasColumnName("fechahora");
+
+        modelBuilder.Entity<EstadisticaUsuario>().ToTable("estadisticausuario");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.UsuarioId).HasColumnName("usuarioid");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.PuntosAcumulados).HasColumnName("puntosacumulados");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.KilometrosAhorrados).HasColumnName("kilometrosahorrados");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.EntregasExitosas).HasColumnName("entregasexitosas");
+
+        modelBuilder.Entity<Notificacion>().ToTable("notificacion");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Id).HasColumnName("id");
+        modelBuilder.Entity<Notificacion>().Property(n => n.UsuarioId).HasColumnName("usuarioid");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Titulo).HasColumnName("titulo");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Mensaje).HasColumnName("mensaje");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Leido).HasColumnName("leido");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Fecha).HasColumnName("fecha");
+
+        modelBuilder.Entity<EstadoSesion>().ToTable("estado_sesion");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.UsuarioId).HasColumnName("usuario_id");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.EstaEnLinea).HasColumnName("esta_en_linea");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.UltimaConexion).HasColumnName("ultima_conexion");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.Dispositivo).HasColumnName("dispositivo");
     }
 }

@@ -13,26 +13,26 @@ public class MantenimientoService : IMantenimientoService
         _mantenimientoRepository = mantenimientoRepository;
     }
 
-    public async Task<IEnumerable<MantenimientoDto>> ObtenerTodosAsync()
+    public async Task<IEnumerable<MantenimientoDto>> ObtenerTodosLosMantenimientosAsync()
     {
         var mantenimientos = await _mantenimientoRepository.ObtenerTodosAsync();
         return mantenimientos.Select(MapToDto);
     }
 
-    public async Task<MantenimientoDto?> ObtenerPorIdAsync(int id)
+    public async Task<MantenimientoDto?> ObtenerMantenimientoPorIdAsync(int id)
     {
         var mantenimiento = await _mantenimientoRepository.ObtenerPorIdAsync(id);
         if (mantenimiento == null) return null;
         return MapToDto(mantenimiento);
     }
 
-    public async Task<IEnumerable<MantenimientoDto>> ObtenerPorVehiculoIdAsync(int vehiculoId)
+    public async Task<IEnumerable<MantenimientoDto>> ObtenerMantenimientosPorVehiculoIdAsync(int vehiculoId)
     {
         var mantenimientos = await _mantenimientoRepository.ObtenerPorVehiculoIdAsync(vehiculoId);
         return mantenimientos.Select(MapToDto);
     }
 
-    public async Task<MantenimientoDto> CrearAsync(CrearMantenimientoDto dto)
+    public async Task<MantenimientoDto> CrearMantenimientoAsync(CrearMantenimientoDto dto)
     {
         var mantenimiento = new Mantenimiento
         {
@@ -49,7 +49,7 @@ public class MantenimientoService : IMantenimientoService
         return MapToDto(mantenimiento);
     }
 
-    public async Task<bool> ActualizarAsync(int id, ActualizarMantenimientoDto dto)
+    public async Task<bool> ActualizarMantenimientoAsync(int id, ActualizarMantenimientoDto dto)
     {
         var mantenimiento = await _mantenimientoRepository.ObtenerPorIdAsync(id);
         if (mantenimiento == null) return false;
@@ -63,7 +63,7 @@ public class MantenimientoService : IMantenimientoService
         return true;
     }
 
-    public async Task<bool> EliminarAsync(int id)
+    public async Task<bool> EliminarMantenimientoAsync(int id)
     {
         var mantenimiento = await _mantenimientoRepository.ObtenerPorIdAsync(id);
         if (mantenimiento == null) return false;

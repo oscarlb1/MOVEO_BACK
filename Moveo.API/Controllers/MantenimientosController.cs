@@ -18,14 +18,14 @@ public class MantenimientosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MantenimientoDto>>> ObtenerTodos()
     {
-        var mantenimientos = await _mantenimientoService.ObtenerTodosAsync();
+        var mantenimientos = await _mantenimientoService.ObtenerTodosLosMantenimientosAsync();
         return Ok(mantenimientos);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<MantenimientoDto>> ObtenerPorId(int id)
     {
-        var mantenimiento = await _mantenimientoService.ObtenerPorIdAsync(id);
+        var mantenimiento = await _mantenimientoService.ObtenerMantenimientoPorIdAsync(id);
         if (mantenimiento == null) return NotFound();
         return Ok(mantenimiento);
     }
@@ -33,21 +33,21 @@ public class MantenimientosController : ControllerBase
     [HttpGet("vehiculo/{vehiculoId}")]
     public async Task<ActionResult<IEnumerable<MantenimientoDto>>> ObtenerPorVehiculoId(int vehiculoId)
     {
-        var mantenimientos = await _mantenimientoService.ObtenerPorVehiculoIdAsync(vehiculoId);
+        var mantenimientos = await _mantenimientoService.ObtenerMantenimientosPorVehiculoIdAsync(vehiculoId);
         return Ok(mantenimientos);
     }
 
     [HttpPost]
     public async Task<ActionResult<MantenimientoDto>> Crear(CrearMantenimientoDto dto)
     {
-        var mantenimiento = await _mantenimientoService.CrearAsync(dto);
+        var mantenimiento = await _mantenimientoService.CrearMantenimientoAsync(dto);
         return CreatedAtAction(nameof(ObtenerPorId), new { id = mantenimiento.Id }, mantenimiento);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> Actualizar(int id, ActualizarMantenimientoDto dto)
     {
-        var resultado = await _mantenimientoService.ActualizarAsync(id, dto);
+        var resultado = await _mantenimientoService.ActualizarMantenimientoAsync(id, dto);
         if (!resultado) return NotFound();
         return NoContent();
     }
@@ -55,7 +55,7 @@ public class MantenimientosController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Eliminar(int id)
     {
-        var resultado = await _mantenimientoService.EliminarAsync(id);
+        var resultado = await _mantenimientoService.EliminarMantenimientoAsync(id);
         if (!resultado) return NotFound();
         return NoContent();
     }

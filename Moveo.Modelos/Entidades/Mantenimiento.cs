@@ -12,6 +12,9 @@ public class Mantenimiento
 
     [Column("vehiculoid")]
     public int VehiculoId { get; set; }
+
+    [Column("fechaservicio")]
+    public DateTime FechaServicio { get; set; }
     
     [Column("tipomantenimiento")]
     public string TipoMantenimiento { get; set; } = string.Empty;
@@ -23,5 +26,5 @@ public class Mantenimiento
     public decimal Coste { get; set; }
 
     [ForeignKey(nameof(VehiculoId))]
-    public virtual Vehiculo? Vehiculo { get; set; }
+    public Vehiculo? Vehiculo { get; set; }
 }

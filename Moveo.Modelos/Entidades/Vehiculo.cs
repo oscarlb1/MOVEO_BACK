@@ -30,4 +30,5 @@ public class Vehiculo
     public DateTime? UpdatedAt { get; set; }
     
     public DateTime? DeletedAt { get; set; }
+    public virtual ICollection<Mantenimiento> Mantenimientos { get; set; } = new List<Mantenimiento>();
 }

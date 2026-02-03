@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Vehiculo> Vehiculos { get; set; }
+    public DbSet<Mantenimiento> Mantenimientos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -52,5 +53,19 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Vehiculo>().Property(v => v.CreatedAt).HasColumnName("created_at");
         modelBuilder.Entity<Vehiculo>().Property(v => v.UpdatedAt).HasColumnName("updated_at");
         modelBuilder.Entity<Vehiculo>().Property(v => v.DeletedAt).HasColumnName("deleted_at");
+
+        modelBuilder.Entity<Mantenimiento>().ToTable("mantenimiento");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.Id).HasColumnName("id");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.VehiculoId).HasColumnName("vehiculoid");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.FechaServicio).HasColumnName("fechaservicio");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.TipoMantenimiento).HasColumnName("tipomantenimiento");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.KilometrajeServicio).HasColumnName("kilometrajeservicio");
+        modelBuilder.Entity<Mantenimiento>().Property(m => m.Coste).HasColumnName("coste");
+
+        modelBuilder.Entity<Mantenimiento>()
+            .HasOne(m => m.Vehiculo)
+            .WithMany(v => v.Mantenimientos)
+            .HasForeignKey(m => m.VehiculoId)
+            .HasConstraintName("fk_vehiculo_mantenimiento");
     }
 }

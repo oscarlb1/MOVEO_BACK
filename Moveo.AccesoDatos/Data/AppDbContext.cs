@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Vehiculo> Vehiculos { get; set; }
     public DbSet<Mantenimiento> Mantenimientos { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,5 +68,16 @@ public class AppDbContext : DbContext
             .WithMany(v => v.Mantenimientos)
             .HasForeignKey(m => m.VehiculoId)
             .HasConstraintName("fk_vehiculo_mantenimiento");
+
+        modelBuilder.Entity<Cliente>().ToTable("cliente");
+        modelBuilder.Entity<Cliente>().Property(c => c.Id).HasColumnName("id");
+        modelBuilder.Entity<Cliente>().Property(c => c.NombreEmpresa).HasColumnName("nombreempresa");
+        modelBuilder.Entity<Cliente>().Property(c => c.Direccion).HasColumnName("direccion");
+        modelBuilder.Entity<Cliente>().Property(c => c.Telefono).HasColumnName("telefono");
+        modelBuilder.Entity<Cliente>().Property(c => c.Latitud).HasColumnName("latitud");
+        modelBuilder.Entity<Cliente>().Property(c => c.Longitud).HasColumnName("longitud");
+        modelBuilder.Entity<Cliente>().Property(c => c.CreatedAt).HasColumnName("created_at");
+        modelBuilder.Entity<Cliente>().Property(c => c.UpdatedAt).HasColumnName("updated_at");
+        modelBuilder.Entity<Cliente>().Property(c => c.DeletedAt).HasColumnName("deleted_at");
     }
 }

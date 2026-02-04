@@ -105,6 +105,20 @@ public class AuthService : IAuthService
         };
     }
 
+    public async Task CerrarSesionAsync(string token)
+    {
+        var user = await _userRepository.ObtenerPorTokenDeRefrescoAsync(token);
+        if (user == null) return; // User not found, nothing to do (or throw exception depending on policy, guarding against info leak)
+
+        var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
+
+        if (refreshToken != null && refreshToken.IsActive)
+        {
+            refreshToken.Revoked = true;
+            await _userRepository.GuardarCambiosAsync();
+        }
+    }
+
     private string GenerarTokenDeAcceso(Usuario user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));

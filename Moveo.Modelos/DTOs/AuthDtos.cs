@@ -23,3 +23,8 @@ public class SolicitudRefrescarTokenDto
 {
     public string TokenDeRefresco { get; set; } = string.Empty;
 }
+
+public class SolicitudCerrarSesionDto
+{
+    public string TokenDeRefresco { get; set; } = string.Empty;
+}

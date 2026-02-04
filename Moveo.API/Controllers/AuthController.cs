@@ -56,4 +56,17 @@ public class AuthController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+    [HttpPost("cerrar-sesion")]
+    public async Task<IActionResult> CerrarSesion(SolicitudCerrarSesionDto solicitudDto)
+    {
+        try
+        {
+            await _authService.CerrarSesionAsync(solicitudDto.TokenDeRefresco);
+            return Ok(new { message = "Sesión cerrada correctamente" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }

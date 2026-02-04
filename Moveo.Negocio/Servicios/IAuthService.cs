@@ -7,4 +7,5 @@ public interface IAuthService
     Task<RespuestaAuthDto> RegistrarAsync(RegistroUsuarioDto registerDto);
     Task<RespuestaAuthDto> IniciarSesionAsync(LoginUsuarioDto loginDto);
     Task<RespuestaAuthDto> RefrescarTokenAsync(string refreshToken);
+    Task CerrarSesionAsync(string refreshToken);
 }

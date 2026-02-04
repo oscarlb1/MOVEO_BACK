@@ -58,6 +58,8 @@ builder.Services.AddScoped<IMantenimientoRepository, MantenimientoRepository>();
 builder.Services.AddScoped<IMantenimientoService, MantenimientoService>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IEntregaRepository, EntregaRepository>();
+builder.Services.AddScoped<IEntregaService, EntregaService>();
 
 var app = builder.Build();
 

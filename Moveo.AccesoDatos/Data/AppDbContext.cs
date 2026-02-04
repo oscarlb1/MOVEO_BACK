@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<Vehiculo> Vehiculos { get; set; }
     public DbSet<Mantenimiento> Mantenimientos { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Entrega> Entregas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,5 +80,25 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Cliente>().Property(c => c.CreatedAt).HasColumnName("created_at");
         modelBuilder.Entity<Cliente>().Property(c => c.UpdatedAt).HasColumnName("updated_at");
         modelBuilder.Entity<Cliente>().Property(c => c.DeletedAt).HasColumnName("deleted_at");
+
+        modelBuilder.Entity<Entrega>().ToTable("entrega");
+        modelBuilder.Entity<Entrega>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<Entrega>().Property(e => e.RutaId).HasColumnName("rutaid");
+        modelBuilder.Entity<Entrega>().Property(e => e.ClienteId).HasColumnName("clienteid");
+        modelBuilder.Entity<Entrega>().Property(e => e.OrdenParada).HasColumnName("ordenparada");
+        modelBuilder.Entity<Entrega>().Property(e => e.HoraEntregaReal).HasColumnName("horaentregareal");
+        modelBuilder.Entity<Entrega>().Property(e => e.FotoUrl).HasColumnName("fotourl");
+        modelBuilder.Entity<Entrega>().Property(e => e.FirmaDigitalUrl).HasColumnName("firmadigitalurl");
+        modelBuilder.Entity<Entrega>().Property(e => e.Notas).HasColumnName("notas");
+        modelBuilder.Entity<Entrega>().Property(e => e.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Entrega>().Property(e => e.CodigoQr).HasColumnName("codigoqr");
+        modelBuilder.Entity<Entrega>().Property(e => e.CreatedAt).HasColumnName("created_at");
+        modelBuilder.Entity<Entrega>().Property(e => e.UpdatedAt).HasColumnName("updated_at");
+
+        modelBuilder.Entity<Entrega>()
+            .HasOne(e => e.Cliente)
+            .WithMany()
+            .HasForeignKey(e => e.ClienteId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

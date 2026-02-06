@@ -20,7 +20,12 @@ public class UsuarioService : IUsuarioService
         {
             Id = u.Id,
             Nombre = u.Nombre,
-            Email = u.Email
+            Email = u.Email,
+            Rol = u.Rol,
+            ImagenUrl = u.ImagenUrl,
+            Telefono = u.Telefono,
+            FechaRegistro = u.FechaRegistro,
+            UltimaConexion = u.UltimaConexion
         });
     }
 
@@ -33,7 +38,12 @@ public class UsuarioService : IUsuarioService
         {
             Id = user.Id,
             Nombre = user.Nombre,
-            Email = user.Email
+            Email = user.Email,
+            Rol = user.Rol,
+            ImagenUrl = user.ImagenUrl,
+            Telefono = user.Telefono,
+            FechaRegistro = user.FechaRegistro,
+            UltimaConexion = user.UltimaConexion
         };
     }
 
@@ -44,7 +54,7 @@ public class UsuarioService : IUsuarioService
             Nombre = createUserDto.Nombre,
             Email = createUserDto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password),
-            Rol = "REPARTIDOR",
+            Rol = createUserDto.Rol,
             DebeCambiarPassword = true,
             FechaRegistro = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,
@@ -53,11 +63,46 @@ public class UsuarioService : IUsuarioService
 
         await _userRepository.AgregarAsync(user);
 
-        return new UsuarioDto
+        return await ObtenerUsuarioPorIdAsync(user.Id) ?? throw new Exception("Error creating user");
+    }
+
+    public async Task<UsuarioDto?> ActualizarUsuarioAsync(int id, ActualizarUsuarioDto dto)
+    {
+        var user = await _userRepository.ObtenerPorIdAsync(id);
+        if (user == null) return null;
+
+        user.Nombre = dto.Nombre;
+        user.Email = dto.Email;
+        user.Rol = dto.Rol;
+        user.ImagenUrl = dto.ImagenUrl;
+        user.Telefono = dto.Telefono;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        if (!string.IsNullOrEmpty(dto.Password))
         {
-            Id = user.Id,
-            Nombre = user.Nombre,
-            Email = user.Email
-        };
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        }
+
+        await _userRepository.GuardarCambiosAsync();
+        return await ObtenerUsuarioPorIdAsync(id);
+    }
+
+    public async Task<UsuarioDto?> ActualizarPerfilAsync(int id, ActualizarPerfilDto dto)
+    {
+        var user = await _userRepository.ObtenerPorIdAsync(id);
+        if (user == null) return null;
+
+        user.Nombre = dto.Nombre;
+        user.ImagenUrl = dto.ImagenUrl;
+        user.Telefono = dto.Telefono;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        if (!string.IsNullOrEmpty(dto.Password))
+        {
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        }
+
+        await _userRepository.GuardarCambiosAsync();
+        return await ObtenerUsuarioPorIdAsync(id);
     }
 }

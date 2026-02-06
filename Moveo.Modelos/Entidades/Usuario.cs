@@ -35,5 +35,11 @@ public class Usuario
     [Column("ultimaconexion")]
     public DateTime? UltimaConexion { get; set; }
 
+    [Column("imagen_url")]
+    public string? ImagenUrl { get; set; }
+
+    [Column("telefono")]
+    public string? Telefono { get; set; }
+
     public List<RefreshToken> RefreshTokens { get; set; } = new();
 }

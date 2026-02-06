@@ -30,6 +30,9 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Usuario>().Property(u => u.FechaRegistro).HasColumnName("fecharegistro");
         modelBuilder.Entity<Usuario>().Property(u => u.CreatedAt).HasColumnName("created_at");
         modelBuilder.Entity<Usuario>().Property(u => u.UpdatedAt).HasColumnName("updated_at");
+        modelBuilder.Entity<Usuario>().Property(u => u.UltimaConexion).HasColumnName("ultimaconexion");
+        modelBuilder.Entity<Usuario>().Property(u => u.ImagenUrl).HasColumnName("imagen_url");
+        modelBuilder.Entity<Usuario>().Property(u => u.Telefono).HasColumnName("telefono");
 
         modelBuilder.Entity<RefreshToken>().ToTable("refresh_tokens");
         modelBuilder.Entity<RefreshToken>().Property(t => t.Id).HasColumnName("id");

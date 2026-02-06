@@ -41,6 +41,15 @@ public class UsuarioRepository : IUsuarioRepository
             .FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
     }
 
+    public async Task EliminarAsync(int id)
+    {
+        var user = await _context.Usuarios.FindAsync(id);
+        if (user != null)
+        {
+            _context.Usuarios.Remove(user);
+        }
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

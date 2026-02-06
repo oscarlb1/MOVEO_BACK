@@ -9,5 +9,6 @@ public interface IUsuarioRepository
     Task<Usuario?> ObtenerPorEmailAsync(string email);
     Task AgregarAsync(Usuario usuario);
     Task<Usuario?> ObtenerPorTokenDeRefrescoAsync(string token);
+    Task EliminarAsync(int id);
     Task GuardarCambiosAsync();
 }

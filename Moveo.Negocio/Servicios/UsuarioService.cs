@@ -105,4 +105,14 @@ public class UsuarioService : IUsuarioService
         await _userRepository.GuardarCambiosAsync();
         return await ObtenerUsuarioPorIdAsync(id);
     }
+
+    public async Task<bool> EliminarUsuarioAsync(int id)
+    {
+        var user = await _userRepository.ObtenerPorIdAsync(id);
+        if (user == null) return false;
+
+        await _userRepository.EliminarAsync(id);
+        await _userRepository.GuardarCambiosAsync();
+        return true;
+    }
 }

@@ -68,4 +68,13 @@ public class UsuariosController : ControllerBase
         if (user == null) return NotFound();
         return Ok(user);
     }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        var result = await _userService.EliminarUsuarioAsync(id);
+        if (!result) return NotFound();
+        return Ok(new { message = "Usuario eliminado correctamente" });
+    }
 }

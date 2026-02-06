@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Vehiculo> Vehiculos { get; set; }
     public DbSet<Mantenimiento> Mantenimientos { get; set; }
+    public DbSet<Ruta> Rutas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,5 +68,25 @@ public class AppDbContext : DbContext
             .WithMany(v => v.Mantenimientos)
             .HasForeignKey(m => m.VehiculoId)
             .HasConstraintName("fk_vehiculo_mantenimiento");
+
+        modelBuilder.Entity<Ruta>().ToTable("ruta");
+        modelBuilder.Entity<Ruta>().Property(r => r.Id).HasColumnName("id");
+        modelBuilder.Entity<Ruta>().Property(r => r.Fecha).HasColumnName("fecha");
+        modelBuilder.Entity<Ruta>().Property(r => r.ConductorId).HasColumnName("conductorid");
+        modelBuilder.Entity<Ruta>().Property(r => r.VehiculoId).HasColumnName("vehiculoid");
+        modelBuilder.Entity<Ruta>().Property(r => r.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Ruta>().Property(r => r.DistanciaTotalEstimada).HasColumnName("distanciatotalestimada");
+
+        modelBuilder.Entity<Ruta>()
+            .HasOne(r => r.Conductor)
+            .WithMany()
+            .HasForeignKey(r => r.ConductorId)
+            .HasConstraintName("fk_conductor_ruta");
+
+        modelBuilder.Entity<Ruta>()
+            .HasOne(r => r.Vehiculo)
+            .WithMany()
+            .HasForeignKey(r => r.VehiculoId)
+            .HasConstraintName("fk_vehiculo_ruta");
     }
 }

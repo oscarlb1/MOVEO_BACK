@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Mantenimiento> Mantenimientos { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Entrega> Entregas { get; set; }
+    public DbSet<EstadisticaUsuario> EstadisticasUsuarios { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -100,5 +101,18 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(e => e.ClienteId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<EstadisticaUsuario>().ToTable("estadisticausuario");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.UsuarioId).HasColumnName("usuarioid");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.PuntosAcumulados).HasColumnName("puntosacumulados");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.KilometrosAhorrados).HasColumnName("kilometrosahorrados");
+        modelBuilder.Entity<EstadisticaUsuario>().Property(e => e.EntregasExitosas).HasColumnName("entregasexitosas");
+
+        modelBuilder.Entity<EstadisticaUsuario>()
+            .HasOne(e => e.Usuario)
+            .WithOne()
+            .HasForeignKey<EstadisticaUsuario>(e => e.UsuarioId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

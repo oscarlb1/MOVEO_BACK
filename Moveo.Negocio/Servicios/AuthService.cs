@@ -33,7 +33,7 @@ public class AuthService : IAuthService
             Nombre = registerDto.Nombre,
             Email = registerDto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
-            Rol = "CONDUCTOR",
+            Rol = "REPARTIDOR",
             DebeCambiarPassword = true,
             FechaRegistro = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,

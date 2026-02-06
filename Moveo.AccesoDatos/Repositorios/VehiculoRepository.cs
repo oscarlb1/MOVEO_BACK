@@ -27,7 +27,22 @@ public class VehiculoRepository : IVehiculoRepository
     {
         vehiculo.UpdatedAt = DateTime.UtcNow;
         _context.Vehiculos.Update(vehiculo);
-        await Task.CompletedTask; // EF Core Tracking takes care of this
+        await Task.CompletedTask;
+    }
+
+    public async Task AgregarAsync(Vehiculo vehiculo)
+    {
+        await _context.Vehiculos.AddAsync(vehiculo);
+    }
+
+    public async Task EliminarAsync(int id)
+    {
+        var vehiculo = await ObtenerPorIdAsync(id);
+        if (vehiculo != null)
+        {
+            vehiculo.DeletedAt = DateTime.UtcNow;
+            _context.Vehiculos.Update(vehiculo);
+        }
     }
 
     public async Task GuardarCambiosAsync()

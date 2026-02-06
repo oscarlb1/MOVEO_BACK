@@ -47,6 +47,39 @@ public class VehiculoService : IVehiculoService
         return MapToDto(vehiculo);
     }
 
+    public async Task<VehiculoDto> CrearVehiculoAsync(CreateVehiculoDto createVehiculoDto)
+    {
+        var vehiculo = new Vehiculo
+        {
+            Matricula = createVehiculoDto.Matricula,
+            MarcaModelo = createVehiculoDto.MarcaModelo,
+            Estado = createVehiculoDto.Estado,
+            CapacidadCarga = createVehiculoDto.CapacidadCarga,
+            ConsumoMedio = createVehiculoDto.ConsumoMedio,
+            KilometrajeActual = createVehiculoDto.KilometrajeActual,
+            FechaUltimaRevision = createVehiculoDto.FechaUltimaRevision.HasValue
+                ? DateTime.SpecifyKind(createVehiculoDto.FechaUltimaRevision.Value, DateTimeKind.Utc)
+                : null,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _vehiculoRepository.AgregarAsync(vehiculo);
+        await _vehiculoRepository.GuardarCambiosAsync();
+
+        return MapToDto(vehiculo);
+    }
+
+    public async Task<bool> EliminarVehiculoAsync(int id)
+    {
+        var vehiculo = await _vehiculoRepository.ObtenerPorIdAsync(id);
+        if (vehiculo == null) return false;
+
+        await _vehiculoRepository.EliminarAsync(id);
+        await _vehiculoRepository.GuardarCambiosAsync();
+        return true;
+    }
+
     private static VehiculoDto MapToDto(Vehiculo v)
     {
         return new VehiculoDto

@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<EstadisticaUsuario> EstadisticasUsuarios { get; set; }
     public DbSet<EstadoSesion> EstadosSesiones { get; set; }
     public DbSet<UbicacionHistorial> HistorialUbicaciones { get; set; }
+    public DbSet<Notificacion> Notificaciones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -133,5 +134,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UbicacionHistorial>().Property(u => u.Latitud).HasColumnName("latitud");
         modelBuilder.Entity<UbicacionHistorial>().Property(u => u.Longitud).HasColumnName("longitud");
         modelBuilder.Entity<UbicacionHistorial>().Property(u => u.FechaHora).HasColumnName("fechahora");
+
+        modelBuilder.Entity<Notificacion>().ToTable("notificacion");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Id).HasColumnName("id");
+        modelBuilder.Entity<Notificacion>().Property(n => n.UsuarioId).HasColumnName("usuarioid");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Titulo).HasColumnName("titulo");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Mensaje).HasColumnName("mensaje");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Leido).HasColumnName("leido");
+        modelBuilder.Entity<Notificacion>().Property(n => n.Fecha).HasColumnName("fecha");
     }
 }

@@ -103,6 +103,8 @@ builder.Services.AddScoped<IEstadoSesionRepository, EstadoSesionRepository>();
 builder.Services.AddScoped<IEstadoSesionService, EstadoSesionService>();
 builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
 builder.Services.AddScoped<IUbicacionService, UbicacionService>();
+builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
+builder.Services.AddScoped<INotificacionService, NotificacionService>();
 
 var app = builder.Build();
 

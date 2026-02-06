@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Entrega> Entregas { get; set; }
     public DbSet<EstadisticaUsuario> EstadisticasUsuarios { get; set; }
     public DbSet<EstadoSesion> EstadosSesiones { get; set; }
+    public DbSet<UbicacionHistorial> HistorialUbicaciones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -125,5 +126,12 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<EstadoSesion>().Property(e => e.EstaEnLinea).HasColumnName("esta_en_linea");
         modelBuilder.Entity<EstadoSesion>().Property(e => e.UltimaConexion).HasColumnName("ultima_conexion");
         modelBuilder.Entity<EstadoSesion>().Property(e => e.Dispositivo).HasColumnName("dispositivo");
+
+        modelBuilder.Entity<UbicacionHistorial>().ToTable("historialubicacion");
+        modelBuilder.Entity<UbicacionHistorial>().Property(u => u.Id).HasColumnName("id");
+        modelBuilder.Entity<UbicacionHistorial>().Property(u => u.RutaId).HasColumnName("rutaid");
+        modelBuilder.Entity<UbicacionHistorial>().Property(u => u.Latitud).HasColumnName("latitud");
+        modelBuilder.Entity<UbicacionHistorial>().Property(u => u.Longitud).HasColumnName("longitud");
+        modelBuilder.Entity<UbicacionHistorial>().Property(u => u.FechaHora).HasColumnName("fechahora");
     }
 }

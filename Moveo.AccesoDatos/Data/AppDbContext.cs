@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Entrega> Entregas { get; set; }
     public DbSet<EstadisticaUsuario> EstadisticasUsuarios { get; set; }
+    public DbSet<EstadoSesion> EstadosSesiones { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -114,5 +115,12 @@ public class AppDbContext : DbContext
             .WithOne()
             .HasForeignKey<EstadisticaUsuario>(e => e.UsuarioId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<EstadoSesion>().ToTable("estado_sesion");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.Id).HasColumnName("id");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.UsuarioId).HasColumnName("usuario_id");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.EstaEnLinea).HasColumnName("esta_en_linea");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.UltimaConexion).HasColumnName("ultima_conexion");
+        modelBuilder.Entity<EstadoSesion>().Property(e => e.Dispositivo).HasColumnName("dispositivo");
     }
 }

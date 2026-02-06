@@ -14,11 +14,13 @@ public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IEstadoSesionService _sesionService;
 
-    public AuthService(IUsuarioRepository userRepository, IConfiguration configuration)
+    public AuthService(IUsuarioRepository userRepository, IConfiguration configuration, IEstadoSesionService sesionService)
     {
         _userRepository = userRepository;
         _configuration = configuration;
+        _sesionService = sesionService;
     }
 
     public async Task<RespuestaAuthDto> RegistrarAsync(RegistroUsuarioDto registerDto)
@@ -45,6 +47,9 @@ public class AuthService : IAuthService
 
         await _userRepository.AgregarAsync(user);
 
+        // Registrar sesión inicial
+        await _sesionService.RegistrarLoginAsync(user.Id, "Registro", "Web/Mobile");
+
         var accessToken = GenerarTokenDeAcceso(user);
 
         return new RespuestaAuthDto
@@ -68,6 +73,10 @@ public class AuthService : IAuthService
         // Revoke old refresh tokens (optional, but good practice to clean up or rotate)
         // For this implementation, we just add a new one.
         user.RefreshTokens.Add(refreshToken);
+
+        // Registrar sesión
+        await _sesionService.RegistrarLoginAsync(user.Id, "Login/Auth", "Web/Mobile");
+
         await _userRepository.GuardarCambiosAsync();
 
         return new RespuestaAuthDto
@@ -115,6 +124,7 @@ public class AuthService : IAuthService
         if (refreshToken != null && refreshToken.IsActive)
         {
             refreshToken.Revoked = true;
+            await _sesionService.RegistrarLogoutAsync(user.Id);
             await _userRepository.GuardarCambiosAsync();
         }
     }
@@ -126,8 +136,9 @@ public class AuthService : IAuthService
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.Rol),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

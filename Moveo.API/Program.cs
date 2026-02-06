@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Moveo.AccesoDatos.Data;
@@ -6,7 +7,9 @@ using Moveo.Modelos.Entidades;
 using Moveo.Negocio.Servicios;
 using Moveo.AccesoDatos.Repositorios;
 using System.Text;
+using System.Security.Claims;
 using Microsoft.OpenApi.Models;
+using Moveo.API.Middleware;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -22,11 +25,11 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Moveo API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"{token}\"",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -96,6 +99,8 @@ builder.Services.AddScoped<IEntregaRepository, EntregaRepository>();
 builder.Services.AddScoped<IEntregaService, EntregaService>();
 builder.Services.AddScoped<IEstadisticaRepository, EstadisticaRepository>();
 builder.Services.AddScoped<IEstadisticaService, EstadisticaService>();
+builder.Services.AddScoped<IEstadoSesionRepository, EstadoSesionRepository>();
+builder.Services.AddScoped<IEstadoSesionService, EstadoSesionService>();
 
 var app = builder.Build();
 
@@ -112,6 +117,9 @@ app.UseCors("AllowVueApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Middleware de seguimiento de actividad (después de auth para tener el usuario)
+app.UseUserActivity();
 
 app.MapControllers();
 

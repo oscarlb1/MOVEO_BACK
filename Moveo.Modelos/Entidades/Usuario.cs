@@ -32,5 +32,8 @@ public class Usuario
     [Column("updated_at")]
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+    [Column("ultimaconexion")]
+    public DateTime? UltimaConexion { get; set; }
+
     public List<RefreshToken> RefreshTokens { get; set; } = new();
 }

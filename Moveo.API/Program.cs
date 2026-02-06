@@ -101,6 +101,8 @@ builder.Services.AddScoped<IEstadisticaRepository, EstadisticaRepository>();
 builder.Services.AddScoped<IEstadisticaService, EstadisticaService>();
 builder.Services.AddScoped<IEstadoSesionRepository, EstadoSesionRepository>();
 builder.Services.AddScoped<IEstadoSesionService, EstadoSesionService>();
+builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+builder.Services.AddScoped<IUbicacionService, UbicacionService>();
 
 var app = builder.Build();
 

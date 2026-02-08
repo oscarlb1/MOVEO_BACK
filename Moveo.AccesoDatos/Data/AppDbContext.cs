@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using Moveo.Modelos.Entidades;
 
 namespace Moveo.AccesoDatos.Data;
@@ -18,11 +17,11 @@ public class AppDbContext : DbContext
     public DbSet<EstadoSesion> EstadosSesiones { get; set; }
     public DbSet<UbicacionHistorial> HistorialUbicaciones { get; set; }
     public DbSet<Notificacion> Notificaciones { get; set; }
+    public DbSet<Ruta> Rutas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Usuario>().ToTable("usuario");
-        // ... (existing mappings)
         modelBuilder.Entity<Usuario>().Property(u => u.Id).HasColumnName("id");
         modelBuilder.Entity<Usuario>().Property(u => u.Nombre).HasColumnName("nombre");
         modelBuilder.Entity<Usuario>().Property(u => u.Email).HasColumnName("email");
@@ -142,5 +141,25 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Notificacion>().Property(n => n.Mensaje).HasColumnName("mensaje");
         modelBuilder.Entity<Notificacion>().Property(n => n.Leido).HasColumnName("leido");
         modelBuilder.Entity<Notificacion>().Property(n => n.Fecha).HasColumnName("fecha");
+
+        modelBuilder.Entity<Ruta>().ToTable("ruta");
+        modelBuilder.Entity<Ruta>().Property(r => r.Id).HasColumnName("id");
+        modelBuilder.Entity<Ruta>().Property(r => r.Fecha).HasColumnName("fecha");
+        modelBuilder.Entity<Ruta>().Property(r => r.ConductorId).HasColumnName("conductorid");
+        modelBuilder.Entity<Ruta>().Property(r => r.VehiculoId).HasColumnName("vehiculoid");
+        modelBuilder.Entity<Ruta>().Property(r => r.Estado).HasColumnName("estado");
+        modelBuilder.Entity<Ruta>().Property(r => r.DistanciaTotalEstimada).HasColumnName("distanciatotalestimada");
+
+        modelBuilder.Entity<Ruta>()
+            .HasOne(r => r.Conductor)
+            .WithMany()
+            .HasForeignKey(r => r.ConductorId)
+            .HasConstraintName("fk_conductor_ruta");
+
+        modelBuilder.Entity<Ruta>()
+            .HasOne(r => r.Vehiculo)
+            .WithMany()
+            .HasForeignKey(r => r.VehiculoId)
+            .HasConstraintName("fk_vehiculo_ruta");
     }
 }

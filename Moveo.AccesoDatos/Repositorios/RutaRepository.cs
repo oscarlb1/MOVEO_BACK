@@ -13,12 +13,34 @@ public class RutaRepository : IRutaRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Ruta>> ObtenerTodasAsync()
+    public async Task<IEnumerable<Ruta>> ObtenerTodasAsync(string? estado = null, int? conductorId = null, int? vehiculoId = null)
     {
-        return await _context.Rutas
+        var query = _context.Rutas
             .Include(r => r.Conductor)
             .Include(r => r.Vehiculo)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(estado))
+        {
+            query = query.Where(r => r.Estado == estado);
+        }
+
+        if (conductorId.HasValue)
+        {
+            query = query.Where(r => r.ConductorId == conductorId.Value);
+        }
+
+        if (vehiculoId.HasValue)
+        {
+            query = query.Where(r => r.VehiculoId == vehiculoId.Value);
+        }
+
+        return await query.ToListAsync();
+    }
+
+    public async Task<int> ObtenerConteoPorEstadoAsync(string estado)
+    {
+        return await _context.Rutas.CountAsync(r => r.Estado == estado);
     }
 
     public async Task<Ruta?> ObtenerPorIdAsync(int id)
@@ -26,6 +48,8 @@ public class RutaRepository : IRutaRepository
         return await _context.Rutas
             .Include(r => r.Conductor)
             .Include(r => r.Vehiculo)
+            .Include(r => r.Entregas)
+                .ThenInclude(e => e.Cliente)
             .FirstOrDefaultAsync(r => r.Id == id);
     }
 

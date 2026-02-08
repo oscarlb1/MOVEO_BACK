@@ -21,7 +21,7 @@ public class Ruta
 
     [Column("estado")]
     [Required]
-    public string Estado { get; set; } = "Planificada";
+    public string Estado { get; set; } = "PENDIENTE";
 
     [Column("distanciatotalestimada")]
     public decimal DistanciaTotalEstimada { get; set; }
@@ -31,4 +31,6 @@ public class Ruta
 
     [ForeignKey(nameof(VehiculoId))]
     public Vehiculo? Vehiculo { get; set; }
+
+    public ICollection<Entrega> Entregas { get; set; } = new List<Entrega>();
 }

@@ -6,6 +6,9 @@ using System.Security.Claims;
 
 namespace Moveo.API.Controllers;
 
+/// <summary>
+/// Controlador para el seguimiento del estado de actividad y sesiones de los usuarios.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]

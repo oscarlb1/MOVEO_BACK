@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Moveo.Modelos.DTOs;
 using Moveo.Negocio.Servicios;
 
 namespace Moveo.API.Controllers;
 
+/// <summary>
+/// Controlador para la gestión y seguimiento de entregas y rutas.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class EntregasController : ControllerBase
 {
     private readonly IEntregaService _entregaService;
@@ -15,6 +20,9 @@ public class EntregasController : ControllerBase
         _entregaService = entregaService;
     }
 
+    /// <summary>
+    /// Obtiene todas las entregas filtradas por ruta, cliente, estado o fecha.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EntregaDto>>> ObtenerTodas(
         [FromQuery] int? rutaId,
@@ -26,6 +34,9 @@ public class EntregasController : ControllerBase
         return Ok(entregas);
     }
 
+    /// <summary>
+    /// Obtiene los detalles de una entrega específica por su ID.
+    /// </summary>
     [HttpGet("{id}")]
     public async Task<ActionResult<EntregaDto>> ObtenerPorId(int id)
     {
@@ -34,6 +45,9 @@ public class EntregasController : ControllerBase
         return Ok(entrega);
     }
 
+    /// <summary>
+    /// Obtiene todas las entregas asociadas a una ruta específica.
+    /// </summary>
     [HttpGet("rutas/{rutaId}")]
     public async Task<ActionResult<IEnumerable<EntregaDto>>> ObtenerPorRuta(int rutaId)
     {
@@ -41,7 +55,11 @@ public class EntregasController : ControllerBase
         return Ok(entregas);
     }
 
+    /// <summary>
+    /// Registra una nueva entrega en el sistema. (Solo Administrador)
+    /// </summary>
     [HttpPost]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<EntregaDto>> Crear(CrearEntregaDto crearEntregaDto)
     {
         try
@@ -55,6 +73,9 @@ public class EntregasController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Actualiza el estado de una entrega (p.ej. 'EN_CAMINO', 'ENTREGADO').
+    /// </summary>
     [HttpPut("{id}/estado")]
     public async Task<ActionResult> ActualizarEstado(int id, ActualizarEstadoEntregaDto dto)
     {
@@ -69,13 +90,20 @@ public class EntregasController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Elimina una entrega del sistema. (Solo Administrador)
+    /// </summary>
     [HttpDelete("{id}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult> Eliminar(int id)
     {
         await _entregaService.EliminarAsync(id);
         return NoContent();
     }
 
+    /// <summary>
+    /// Obtiene un resumen estadístico de las entregas del día de hoy.
+    /// </summary>
     [HttpGet("estadisticas/hoy")]
     public async Task<ActionResult<EntregaEstadisticasDto>> ObtenerEstadisticasHoy()
     {

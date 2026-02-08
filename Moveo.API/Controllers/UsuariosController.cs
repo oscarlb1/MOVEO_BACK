@@ -6,6 +6,9 @@ using System.Security.Claims;
 
 namespace Moveo.API.Controllers;
 
+/// <summary>
+/// Controlador para la gestión de usuarios, roles y perfiles en el sistema.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -18,6 +21,9 @@ public class UsuariosController : ControllerBase
         _userService = userService;
     }
 
+    /// <summary>
+    /// Obtiene la lista de todos los usuarios registrados (Solo Administrador).
+    /// </summary>
     [HttpGet]
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<IEnumerable<UsuarioDto>>> ObtenerTodos()
@@ -25,6 +31,9 @@ public class UsuariosController : ControllerBase
         return Ok(await _userService.ObtenerTodosLosUsuariosAsync());
     }
 
+    /// <summary>
+    /// Obtiene la información del perfil del propio usuario autenticado.
+    /// </summary>
     [HttpGet("me")]
     public async Task<ActionResult<UsuarioDto>> ObtenerMiPerfil()
     {
@@ -34,6 +43,9 @@ public class UsuariosController : ControllerBase
         return Ok(user);
     }
 
+    /// <summary>
+    /// Obtiene la información detallada de un usuario por su ID (Solo Administrador).
+    /// </summary>
     [HttpGet("{id}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<UsuarioDto>> ObtenerPorId(int id)
@@ -43,6 +55,9 @@ public class UsuariosController : ControllerBase
         return Ok(user);
     }
 
+    /// <summary>
+    /// Crea un nuevo usuario en el sistema (Solo Administrador).
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<UsuarioDto>> Crear(CrearUsuarioDto createUserDto)
@@ -51,6 +66,9 @@ public class UsuariosController : ControllerBase
         return CreatedAtAction(nameof(ObtenerPorId), new { id = user.Id }, user);
     }
 
+    /// <summary>
+    /// Actualiza el perfil del usuario autenticado.
+    /// </summary>
     [HttpPut("me")]
     public async Task<ActionResult<UsuarioDto>> ActualizarPerfil(ActualizarPerfilDto updateProfileDto)
     {
@@ -60,6 +78,9 @@ public class UsuariosController : ControllerBase
         return Ok(user);
     }
 
+    /// <summary>
+    /// Actualiza la información de un usuario específico por su ID (Solo Administrador).
+    /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<UsuarioDto>> Actualizar(int id, ActualizarUsuarioDto updateUserDto)
@@ -69,6 +90,9 @@ public class UsuariosController : ControllerBase
         return Ok(user);
     }
 
+    /// <summary>
+    /// Elimina un usuario del sistema por su ID (Solo Administrador).
+    /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Eliminar(int id)

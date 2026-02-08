@@ -6,6 +6,9 @@ using System.Security.Claims;
 
 namespace Moveo.API.Controllers;
 
+/// <summary>
+/// Controlador para la gestión de notificaciones de usuario (leídas, no leídas, avisos administrativos).
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]

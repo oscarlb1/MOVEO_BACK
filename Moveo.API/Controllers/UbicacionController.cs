@@ -5,6 +5,9 @@ using Moveo.Negocio.Servicios;
 
 namespace Moveo.API.Controllers;
 
+/// <summary>
+/// Controlador para el registro y consulta de la ubicación geográfica de los vehículos y rutas.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -17,6 +20,9 @@ public class UbicacionController : ControllerBase
         _ubicacionService = ubicacionService;
     }
 
+    /// <summary>
+    /// Registra un nuevo punto de ubicación geográfica.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> Registrar(RegistroUbicacionDto registroDto)
     {
@@ -24,6 +30,9 @@ public class UbicacionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Obtiene el historial completo de ubicaciones registradas para una ruta específica.
+    /// </summary>
     [HttpGet("ruta/{rutaId}")]
     public async Task<ActionResult<IEnumerable<UbicacionDto>>> ObtenerPorRuta(int rutaId)
     {
@@ -31,6 +40,9 @@ public class UbicacionController : ControllerBase
         return Ok(historial);
     }
 
+    /// <summary>
+    /// Obtiene la última ubicación conocida de una ruta específica.
+    /// </summary>
     [HttpGet("ultimo/ruta/{rutaId}")]
     public async Task<ActionResult<UbicacionDto>> ObtenerUltimoPunto(int rutaId)
     {
@@ -39,6 +51,9 @@ public class UbicacionController : ControllerBase
         return Ok(punto);
     }
 
+    /// <summary>
+    /// Actualiza un registro de ubicación específica. (Solo Administrador)
+    /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Actualizar(int id, RegistroUbicacionDto registroDto)
@@ -48,6 +63,9 @@ public class UbicacionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Elimina un punto de ubicación específico. (Solo Administrador)
+    /// </summary>
     [HttpDelete("{id}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> Eliminar(int id)
@@ -57,6 +75,9 @@ public class UbicacionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Elimina todo el historial de ubicaciones de una ruta determinada. (Solo Administrador)
+    /// </summary>
     [HttpDelete("ruta/{rutaId}")]
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> EliminarPorRuta(int rutaId)

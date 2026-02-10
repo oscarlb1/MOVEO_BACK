@@ -134,7 +134,7 @@ public class AuthService : IAuthService
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Nombre),
@@ -142,6 +142,16 @@ public class AuthService : IAuthService
             new Claim(ClaimTypes.Role, user.Rol),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        if (!string.IsNullOrEmpty(user.Telefono))
+        {
+            claims.Add(new Claim(ClaimTypes.MobilePhone, user.Telefono));
+        }
+        
+        if (!string.IsNullOrEmpty(user.ImagenUrl))
+        {
+            claims.Add(new Claim("imagen_url", user.ImagenUrl));
+        }
 
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],

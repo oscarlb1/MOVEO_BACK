@@ -114,7 +114,7 @@ public class AuthController : ControllerBase
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddMinutes(expireMinutes),
-            Secure = true, // En desarrollo se puede poner false si no hay HTTPS, pero recomendable true
+            Secure = Request.IsHttps, // Dinámico según el protocolo
             SameSite = SameSiteMode.Lax, // Lax es más compatible para navegación entre front y back
             Path = "/" // Disponible en toda la app
         };

@@ -42,6 +42,24 @@ public class EstadisticasController : ControllerBase
     }
 
     /// <summary>
+    /// Obtiene las estadísticas específicas de hoy para el usuario autenticado.
+    /// </summary>
+    [HttpGet("me/hoy")]
+    public async Task<ActionResult<EstadisticaHoyDto>> ObtenerMisEstadisticasHoy()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                          ?? User.FindFirst("sub")?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+        {
+            return Unauthorized("No se pudo identificar al usuario.");
+        }
+
+        var stats = await _estadisticaService.ObtenerEstadisticasHoyUsuarioAsync(userId);
+        return Ok(stats);
+    }
+
+    /// <summary>
     /// Obtiene el ranking de usuarios basado en entregas u otros criterios.
     /// </summary>
     /// <param name="count">Número de usuarios a mostrar en el ranking.</param>

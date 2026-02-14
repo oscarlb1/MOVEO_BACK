@@ -7,5 +7,6 @@ public interface IEstadisticaService
     Task<EstadisticaUsuarioDto?> ObtenerEstadisticasUsuarioAsync(int usuarioId);
     Task<IEnumerable<RankingUsuarioDto>> ObtenerRankingTopAsync(int count = 5, string? filtro = null, string? sortBy = "entregas");
     Task<EstadisticaGlobalDto> ObtenerEstadisticasGlobalesAsync();
+    Task<EstadisticaHoyDto> ObtenerEstadisticasHoyUsuarioAsync(int usuarioId);
     Task IncrementarEstadisticasAsync(int usuarioId, int puntos, decimal km, int entregas);
 }

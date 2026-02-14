@@ -10,6 +10,7 @@ public interface IRutaRepository
     Task<Ruta?> ObtenerPorIdAsync(int id);
     Task<IEnumerable<Ruta>> ObtenerPorConductorIdAsync(int conductorId);
     Task<IEnumerable<Ruta>> ObtenerPorVehiculoIdAsync(int vehiculoId);
+    Task<IEnumerable<Ruta>> ObtenerMisRutasAsync(int conductorId);
     Task<int> ObtenerConteoPorEstadoAsync(string estado);
     Task AgregarAsync(Ruta ruta);
     Task ActualizarAsync(Ruta ruta);

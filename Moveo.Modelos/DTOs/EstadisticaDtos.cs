@@ -25,3 +25,10 @@ public class EstadisticaGlobalDto
     public decimal TotalKilometrosAhorrados { get; set; }
     public int TotalPuntosAcumulados { get; set; }
 }
+
+public record EstadisticaHoyDto(
+    int EntregasTotales,
+    int EntregasCompletadas,
+    decimal Eficiencia,
+    string TiempoEnRuta
+);

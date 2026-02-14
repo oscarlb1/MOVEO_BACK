@@ -32,5 +32,8 @@ public class Ruta
     [ForeignKey(nameof(VehiculoId))]
     public Vehiculo? Vehiculo { get; set; }
 
+    [Column("updated_at")]
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
     public ICollection<Entrega> Entregas { get; set; } = new List<Entrega>();
 }

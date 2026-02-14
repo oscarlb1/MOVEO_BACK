@@ -74,7 +74,8 @@ public class EntregaService : IEntregaService
         if (!string.IsNullOrEmpty(dto.FirmaDigitalUrl)) entrega.FirmaDigitalUrl = dto.FirmaDigitalUrl;
         if (!string.IsNullOrEmpty(dto.Notas)) entrega.Notas = dto.Notas;
 
-        if (dto.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase))
+        if (dto.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) || 
+            dto.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase))
         {
             entrega.HoraEntregaReal = DateTime.UtcNow;
         }
@@ -94,8 +95,10 @@ public class EntregaService : IEntregaService
         var entregasHoy = await _entregaRepository.ObtenerDelDiaAsync(DateTime.UtcNow);
         var total = entregasHoy.Count();
         var pendientes = entregasHoy.Count(e => e.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) || e.Estado.Equals("EnProgreso", StringComparison.OrdinalIgnoreCase));
-        var completadas = entregasHoy.Count(e => e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase));
-        var fallidas = entregasHoy.Count(e => e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase));
+        var completadas = entregasHoy.Count(e => e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) || 
+                                                e.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase));
+        var fallidas = entregasHoy.Count(e => e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase) || 
+                                             e.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase));
 
         return new EntregaEstadisticasDto(total, pendientes, completadas, fallidas);
     }

@@ -62,6 +62,16 @@ public class RutaRepository : IRutaRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Ruta>> ObtenerMisRutasAsync(int conductorId)
+    {
+        return await _context.Rutas
+            .Include(r => r.Conductor)
+            .Include(r => r.Vehiculo)
+            .Include(r => r.Entregas)
+            .Where(r => r.ConductorId == conductorId)
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Ruta>> ObtenerPorVehiculoIdAsync(int vehiculoId)
     {
         return await _context.Rutas

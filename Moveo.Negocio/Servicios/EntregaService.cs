@@ -8,11 +8,13 @@ public class EntregaService : IEntregaService
 {
     private readonly IEntregaRepository _entregaRepository;
     private readonly IClienteRepository _clienteRepository;
+    private readonly IRutaRepository _rutaRepository;
 
-    public EntregaService(IEntregaRepository entregaRepository, IClienteRepository clienteRepository)
+    public EntregaService(IEntregaRepository entregaRepository, IClienteRepository clienteRepository, IRutaRepository rutaRepository)
     {
         _entregaRepository = entregaRepository;
         _clienteRepository = clienteRepository;
+        _rutaRepository = rutaRepository;
     }
 
     public async Task<IEnumerable<EntregaDto>> ObtenerTodasAsync(int? rutaId, int? clienteId, string? estado, DateTime? fecha)
@@ -83,6 +85,35 @@ public class EntregaService : IEntregaService
         entrega.UpdatedAt = DateTime.UtcNow;
 
         await _entregaRepository.ActualizarAsync(entrega);
+
+        // Lógica de cierre automático de ruta
+        await VerificarYFirmaRutaAsync(entrega.RutaId);
+    }
+
+    private async Task VerificarYFirmaRutaAsync(int rutaId)
+    {
+        var entregas = await _entregaRepository.ObtenerPorRutaAsync(rutaId);
+        
+        // Si no hay entregas (raro), no hacemos nada
+        if (!entregas.Any()) return;
+
+        // Comprobar si todas las entregas están en un estado final (Entregado o Cancelado/Fallido)
+        bool todasFinalizadas = entregas.All(e => 
+            e.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase) || 
+            e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) ||
+            e.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase) ||
+            e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase)
+        );
+
+        if (todasFinalizadas)
+        {
+            var ruta = await _rutaRepository.ObtenerPorIdAsync(rutaId);
+            if (ruta != null && ruta.Estado != "COMPLETADA")
+            {
+                ruta.Estado = "COMPLETADA";
+                await _rutaRepository.ActualizarAsync(ruta);
+            }
+        }
     }
 
     public async Task EliminarAsync(int id)

@@ -11,10 +11,12 @@ namespace Moveo.Negocio.Servicios;
 public class RutaService : IRutaService
 {
     private readonly IRutaRepository _rutaRepository;
+    private readonly INotificacionService _notificacionService;
 
-    public RutaService(IRutaRepository rutaRepository)
+    public RutaService(IRutaRepository rutaRepository, INotificacionService notificacionService)
     {
         _rutaRepository = rutaRepository;
+        _notificacionService = notificacionService;
     }
 
     public async Task<IEnumerable<RutaDto>> ObtenerTodasAsync(string? estado = null, int? conductorId = null, int? vehiculoId = null)
@@ -90,6 +92,18 @@ public class RutaService : IRutaService
         }
 
         await _rutaRepository.AgregarAsync(ruta);
+
+        // Enviar notificación al conductor asignado
+        if (ruta.ConductorId > 0)
+        {
+            await _notificacionService.EnviarNotificacionAsync(new CrearNotificacionDto
+            {
+                UsuarioId = ruta.ConductorId,
+                Titulo = "Nueva Ruta Asignada",
+                Mensaje = $"Se te ha asignado una nueva ruta para el día {ruta.Fecha.ToLocalTime():dd/MM/yyyy}."
+            });
+        }
+
         return MapToDto(ruta);
     }
 
@@ -98,6 +112,8 @@ public class RutaService : IRutaService
         var ruta = await _rutaRepository.ObtenerPorIdAsync(id);
         if (ruta == null) return false;
 
+        var conductorAnterior = ruta.ConductorId;
+        
         ruta.Fecha = rutaDto.Fecha.Kind == DateTimeKind.Utc ? rutaDto.Fecha : DateTime.SpecifyKind(rutaDto.Fecha, DateTimeKind.Utc);
         ruta.ConductorId = rutaDto.ConductorId;
         ruta.VehiculoId = rutaDto.VehiculoId;
@@ -108,6 +124,18 @@ public class RutaService : IRutaService
         ruta.DistanciaTotalEstimada = rutaDto.DistanciaTotalEstimada;
 
         await _rutaRepository.ActualizarAsync(ruta);
+
+        // Si el conductor ha cambiado o es una nueva asignación, notificar
+        if (ruta.ConductorId > 0 && ruta.ConductorId != conductorAnterior)
+        {
+            await _notificacionService.EnviarNotificacionAsync(new CrearNotificacionDto
+            {
+                UsuarioId = ruta.ConductorId,
+                Titulo = "Ruta Reasignada",
+                Mensaje = $"Se te ha asignado o actualizado la ruta #{ruta.Id} para el día {ruta.Fecha.ToLocalTime():dd/MM/yyyy}."
+            });
+        }
+
         return true;
     }
 

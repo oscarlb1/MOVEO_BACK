@@ -10,10 +10,16 @@ using System.Text;
 using System.Security.Claims;
 using Microsoft.OpenApi.Models;
 using Moveo.API.Middleware;
+using Moveo.Modelos.Configuraciones;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add Cloudinary Settings Configuration
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
 
 // Add services to the container.
 
@@ -98,6 +104,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUploadService, CloudinaryUploadService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IVehiculoRepository, VehiculoRepository>();

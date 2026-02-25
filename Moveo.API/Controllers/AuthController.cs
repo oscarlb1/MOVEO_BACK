@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("registrar")]
-    public async Task<ActionResult<RespuestaAuthDto>> Registrar(RegistroUsuarioDto registerDto)
+    public async Task<ActionResult<RespuestaAuthDto>> Registrar([FromForm] RegistroUsuarioDto registerDto)
     {
         try
         {

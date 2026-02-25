@@ -15,12 +15,14 @@ public class AuthService : IAuthService
     private readonly IUsuarioRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IEstadoSesionService _sesionService;
+    private readonly IUploadService _uploadService;
 
-    public AuthService(IUsuarioRepository userRepository, IConfiguration configuration, IEstadoSesionService sesionService)
+    public AuthService(IUsuarioRepository userRepository, IConfiguration configuration, IEstadoSesionService sesionService, IUploadService uploadService)
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _sesionService = sesionService;
+        _uploadService = uploadService;
     }
 
     public async Task<RespuestaAuthDto> RegistrarAsync(RegistroUsuarioDto registerDto)
@@ -41,6 +43,11 @@ public class AuthService : IAuthService
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
+
+        if (registerDto.Imagen != null)
+        {
+            user.ImagenUrl = await _uploadService.UploadImageAsync(registerDto.Imagen);
+        }
 
         var refreshToken = GenerarTokenDeRefresco(user.Id);
         user.RefreshTokens.Add(refreshToken);

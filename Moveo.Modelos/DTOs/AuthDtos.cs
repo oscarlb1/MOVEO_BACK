@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Moveo.Modelos.DTOs;
 
 public class RegistroUsuarioDto
@@ -5,6 +7,7 @@ public class RegistroUsuarioDto
     public string Nombre { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
+    public IFormFile? Imagen { get; set; }
 }
 
 public class LoginUsuarioDto

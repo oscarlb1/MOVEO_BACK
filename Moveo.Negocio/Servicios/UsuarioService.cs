@@ -7,10 +7,12 @@ namespace Moveo.Negocio.Servicios;
 public class UsuarioService : IUsuarioService
 {
     private readonly IUsuarioRepository _userRepository;
+    private readonly IUploadService _uploadService;
 
-    public UsuarioService(IUsuarioRepository userRepository)
+    public UsuarioService(IUsuarioRepository userRepository, IUploadService uploadService)
     {
         _userRepository = userRepository;
+        _uploadService = uploadService;
     }
 
     public async Task<IEnumerable<UsuarioDto>> ObtenerTodosLosUsuariosAsync()
@@ -61,6 +63,11 @@ public class UsuarioService : IUsuarioService
             UpdatedAt = DateTime.UtcNow
         };
 
+        if (createUserDto.Imagen != null)
+        {
+            user.ImagenUrl = await _uploadService.UploadImageAsync(createUserDto.Imagen);
+        }
+
         await _userRepository.AgregarAsync(user);
 
         return await ObtenerUsuarioPorIdAsync(user.Id) ?? throw new Exception("Error creating user");
@@ -74,9 +81,17 @@ public class UsuarioService : IUsuarioService
         user.Nombre = dto.Nombre;
         user.Email = dto.Email;
         user.Rol = dto.Rol;
-        user.ImagenUrl = dto.ImagenUrl;
         user.Telefono = dto.Telefono;
         user.UpdatedAt = DateTime.UtcNow;
+
+        if (dto.Imagen != null)
+        {
+            user.ImagenUrl = await _uploadService.UploadImageAsync(dto.Imagen);
+        }
+        else if (dto.ImagenUrl != null)
+        {
+            user.ImagenUrl = dto.ImagenUrl;
+        }
 
         if (!string.IsNullOrEmpty(dto.Password))
         {
@@ -93,9 +108,17 @@ public class UsuarioService : IUsuarioService
         if (user == null) return null;
 
         user.Nombre = dto.Nombre;
-        user.ImagenUrl = dto.ImagenUrl;
         user.Telefono = dto.Telefono;
         user.UpdatedAt = DateTime.UtcNow;
+
+        if (dto.Imagen != null)
+        {
+            user.ImagenUrl = await _uploadService.UploadImageAsync(dto.Imagen);
+        }
+        else if (dto.ImagenUrl != null)
+        {
+            user.ImagenUrl = dto.ImagenUrl;
+        }
 
         if (!string.IsNullOrEmpty(dto.Password))
         {

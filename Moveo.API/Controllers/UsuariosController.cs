@@ -60,7 +60,7 @@ public class UsuariosController : ControllerBase
     /// </summary>
     [HttpPost]
     [Authorize(Roles = "ADMIN")]
-    public async Task<ActionResult<UsuarioDto>> Crear(CrearUsuarioDto createUserDto)
+    public async Task<ActionResult<UsuarioDto>> Crear([FromForm] CrearUsuarioDto createUserDto)
     {
         var user = await _userService.CrearUsuarioAsync(createUserDto);
         return CreatedAtAction(nameof(ObtenerPorId), new { id = user.Id }, user);
@@ -70,7 +70,7 @@ public class UsuariosController : ControllerBase
     /// Actualiza el perfil del usuario autenticado.
     /// </summary>
     [HttpPut("me")]
-    public async Task<ActionResult<UsuarioDto>> ActualizarPerfil(ActualizarPerfilDto updateProfileDto)
+    public async Task<ActionResult<UsuarioDto>> ActualizarPerfil([FromForm] ActualizarPerfilDto updateProfileDto)
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userService.ActualizarPerfilAsync(userId, updateProfileDto);
@@ -83,7 +83,7 @@ public class UsuariosController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [Authorize(Roles = "ADMIN")]
-    public async Task<ActionResult<UsuarioDto>> Actualizar(int id, ActualizarUsuarioDto updateUserDto)
+    public async Task<ActionResult<UsuarioDto>> Actualizar(int id, [FromForm] ActualizarUsuarioDto updateUserDto)
     {
         var user = await _userService.ActualizarUsuarioAsync(id, updateUserDto);
         if (user == null) return NotFound();

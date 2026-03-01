@@ -12,11 +12,22 @@ public class RutaService : IRutaService
 {
     private readonly IRutaRepository _rutaRepository;
     private readonly INotificacionService _notificacionService;
+    private readonly IClimaService _climaService;
+    private readonly IDistanciasService _distanciasService;
+    private readonly IIaOptimizationService _iaOptimizationService;
 
-    public RutaService(IRutaRepository rutaRepository, INotificacionService notificacionService)
+    public RutaService(
+        IRutaRepository rutaRepository,
+        INotificacionService notificacionService,
+        IClimaService climaService,
+        IDistanciasService distanciasService,
+        IIaOptimizationService iaOptimizationService)
     {
         _rutaRepository = rutaRepository;
         _notificacionService = notificacionService;
+        _climaService = climaService;
+        _distanciasService = distanciasService;
+        _iaOptimizationService = iaOptimizationService;
     }
 
     public async Task<IEnumerable<RutaDto>> ObtenerTodasAsync(string? estado = null, int? conductorId = null, int? vehiculoId = null)
@@ -113,7 +124,7 @@ public class RutaService : IRutaService
         if (ruta == null) return false;
 
         var conductorAnterior = ruta.ConductorId;
-        
+
         ruta.Fecha = rutaDto.Fecha.Kind == DateTimeKind.Utc ? rutaDto.Fecha : DateTime.SpecifyKind(rutaDto.Fecha, DateTimeKind.Utc);
         ruta.ConductorId = rutaDto.ConductorId;
         ruta.VehiculoId = rutaDto.VehiculoId;
@@ -168,6 +179,61 @@ public class RutaService : IRutaService
             Completadas = await _rutaRepository.ObtenerConteoPorEstadoAsync("COMPLETADA"),
             Canceladas = await _rutaRepository.ObtenerConteoPorEstadoAsync("CANCELADA")
         };
+    }
+
+    public async Task<OptimizacionIaResponseDto> OptimizarRutaAsync(int id)
+    {
+        var ruta = await _rutaRepository.ObtenerPorIdAsync(id);
+        if (ruta == null)
+            throw new Exception($"Ruta con ID {id} no encontrada.");
+
+        if (!ruta.Entregas.Any())
+            throw new Exception($"La ruta con ID {id} no tiene entregas asignadas para optimizar.");
+
+        var entregas = ruta.Entregas.ToList();
+
+        // 1. Obtener clima para cada punto
+        var climaInfo = await _climaService.ObtenerClimaEntregasAsync(entregas);
+
+        // 2. Obtener matriz de distancias
+        var distanciasInfo = await _distanciasService.ObtenerMatrizDistanciasAsync(entregas);
+
+        // 3. Preparar prompt para Gemini
+        var prompt = $"Actúa como un logista experto. Optimiza el orden de las siguientes entregas de una ruta de reparto.\n\n" +
+                     $"Entregas actuales (ID, Dirección, Coordenadas, Orden Original):\n";
+
+        foreach (var entrega in entregas)
+        {
+            prompt += $"- ID: {entrega.Id}, Dirección: {entrega.Cliente?.Direccion}, Lat: {entrega.Cliente?.Latitud}, Lon: {entrega.Cliente?.Longitud}, Orden Original: {entrega.OrdenParada}\n";
+        }
+
+        prompt += $"\nInformación del clima en los puntos de entrega:\n{climaInfo}\n\n" +
+                  $"Matriz de distancias (OSRM):\n{distanciasInfo}\n\n" +
+                  $"Debes devolver EXCLUSIVAMENTE un JSON válido con esta estructura, sin texto adicional ni bloques de Markdown (ej. ```json):\n" +
+                  $"{{\n" +
+                  $"  \"ordenParadas\": [ids_ordenados],\n" +
+                  $"  \"justificacion\": \"tu explicacion breve\"\n" +
+                  $"}}";
+
+        // 4. Llamar a IA
+        var optimizacion = await _iaOptimizationService.OptimizarRutaAsync(prompt);
+
+        if (optimizacion == null || !optimizacion.OrdenParadas.Any())
+            throw new Exception("La IA no pudo optimizar la ruta de forma válida.");
+
+        // 5. Aplicar optimización
+        int nuevoOrden = 1;
+        foreach (var entregaId in optimizacion.OrdenParadas)
+        {
+            var entrega = entregas.FirstOrDefault(e => e.Id == entregaId);
+            if (entrega != null)
+            {
+                entrega.OrdenParada = nuevoOrden++;
+            }
+        }
+        await _rutaRepository.ActualizarAsync(ruta);
+
+        return optimizacion;
     }
 
     private static RutaDto MapToDto(Ruta r)

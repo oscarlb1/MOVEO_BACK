@@ -117,4 +117,27 @@ public class RutaController : ControllerBase
         if (!eliminado) return NotFound();
         return NoContent();
     }
+
+    /// <summary>
+    /// Optimiza el orden de las entregas de una ruta utilizando IA (Google Gemini), el clima actual y distancias.
+    /// </summary>
+    /// <param name="id">El ID de la ruta a optimizar.</param>
+    [HttpPost("{id}/optimizar-ia")]
+    public async Task<ActionResult<OptimizacionIaResponseDto>> OptimizarRutaConIa(int id)
+    {
+        try
+        {
+            var optimizacion = await _rutaService.OptimizarRutaAsync(id);
+            return Ok(new
+            {
+                RutaId = id,
+                Exito = true,
+                Optimizacion = optimizacion
+            });
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }

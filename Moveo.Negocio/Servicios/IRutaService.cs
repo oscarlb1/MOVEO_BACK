@@ -14,4 +14,5 @@ public interface IRutaService
     Task<bool> ActualizarEstadoAsync(int id, string nuevoEstado);
     Task<bool> EliminarAsync(int id);
     Task<RutaEstadisticasDto> ObtenerEstadisticasAsync();
+    Task<OptimizacionIaResponseDto> OptimizarRutaAsync(int id);
 }

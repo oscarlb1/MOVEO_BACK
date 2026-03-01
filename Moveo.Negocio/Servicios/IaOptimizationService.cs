@@ -12,7 +12,7 @@ public class IaOptimizationService : IIaOptimizationService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
-    private const string GeminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent";
+    private const string GeminiApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
     public IaOptimizationService(HttpClient httpClient, IConfiguration configuration)
     {

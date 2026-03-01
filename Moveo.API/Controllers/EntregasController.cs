@@ -74,6 +74,25 @@ public class EntregasController : ControllerBase
     }
 
     /// <summary>
+    /// Actualiza los datos completos de una entrega. (Solo Administrador)
+    /// </summary>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<EntregaDto>> Actualizar(int id, ActualizarEntregaDto dto)
+    {
+        try
+        {
+            var entrega = await _entregaService.ActualizarAsync(id, dto);
+            if (entrega == null) return NotFound();
+            return Ok(entrega);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    /// <summary>
     /// Actualiza el estado de una entrega (p.ej. 'EN_CAMINO', 'ENTREGADO').
     /// </summary>
     [HttpPut("{id}/estado")]

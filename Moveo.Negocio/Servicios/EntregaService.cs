@@ -63,6 +63,33 @@ public class EntregaService : IEntregaService
         return MapToDto(entrega);
     }
 
+    public async Task<EntregaDto?> ActualizarAsync(int id, ActualizarEntregaDto dto)
+    {
+        var entrega = await _entregaRepository.ObtenerPorIdAsync(id);
+        if (entrega == null)
+        {
+            throw new KeyNotFoundException($"Entrega con ID {id} no encontrada.");
+        }
+
+        var cliente = await _clienteRepository.ObtenerPorIdAsync(dto.ClienteId);
+        if (cliente == null)
+        {
+            throw new KeyNotFoundException($"Cliente con ID {dto.ClienteId} no encontrado.");
+        }
+
+        entrega.RutaId = dto.RutaId;
+        entrega.ClienteId = dto.ClienteId;
+        entrega.OrdenParada = dto.OrdenParada;
+        entrega.Notas = dto.Notas;
+        entrega.CodigoQr = dto.CodigoQr;
+        entrega.UpdatedAt = DateTime.UtcNow;
+
+        await _entregaRepository.ActualizarAsync(entrega);
+        
+        entrega.Cliente = cliente;
+        return MapToDto(entrega);
+    }
+
     public async Task ActualizarEstadoAsync(int id, ActualizarEstadoEntregaDto dto)
     {
         var entrega = await _entregaRepository.ObtenerPorIdAsync(id);

@@ -24,6 +24,14 @@ public record CrearEntregaDto(
     string? CodigoQr
 );
 
+public record ActualizarEntregaDto(
+    int ClienteId,
+    int RutaId,
+    int OrdenParada,
+    string? Notas,
+    string? CodigoQr
+);
+
 public record ActualizarEstadoEntregaDto(
     string Estado,
     string? FotoUrl,

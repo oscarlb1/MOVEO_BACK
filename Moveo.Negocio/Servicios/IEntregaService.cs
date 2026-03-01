@@ -8,6 +8,7 @@ public interface IEntregaService
     Task<EntregaDto?> ObtenerPorIdAsync(int id);
     Task<IEnumerable<EntregaDto>> ObtenerPorRutaAsync(int rutaId);
     Task<EntregaDto> CrearAsync(CrearEntregaDto crearEntregaDto);
+    Task<EntregaDto?> ActualizarAsync(int id, ActualizarEntregaDto actualizarDto);
     Task ActualizarEstadoAsync(int id, ActualizarEstadoEntregaDto actualizarEstadoDto);
     Task EliminarAsync(int id);
     Task<EntregaEstadisticasDto> ObtenerEstadisticasDelDiaAsync();

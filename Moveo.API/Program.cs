@@ -125,7 +125,10 @@ builder.Services.AddScoped<INotificacionRepository, NotificacionRepository>();
 builder.Services.AddScoped<INotificacionService, NotificacionService>();
 builder.Services.AddScoped<IRutaRepository, RutaRepository>();
 builder.Services.AddScoped<IRutaService, RutaService>();
-
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IDistanciasService, DistanciasService>();
+builder.Services.AddScoped<IClimaService, ClimaService>();
+builder.Services.AddScoped<IIaOptimizationService, IaOptimizationService>();
 
 var app = builder.Build();
 

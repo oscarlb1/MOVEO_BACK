@@ -152,3 +152,6 @@ app.UseUserActivity();
 app.MapControllers();
 
 app.Run();
+
+// Necesario para que WebApplicationFactory<Program> pueda encontrar el punto de entrada
+public partial class Program { }

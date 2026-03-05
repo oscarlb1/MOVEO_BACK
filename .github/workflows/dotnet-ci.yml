@@ -2,9 +2,9 @@ name: .NET CI/CD Pipeline
 
 on:
   push:
-    branches: ["main", "testing"]
+    branches: ["main", "testing", "develop"]
   pull_request:
-    branches: ["main", "testing"]
+    branches: ["main", "testing", "develop"]
 
 jobs:
   smoke-test:

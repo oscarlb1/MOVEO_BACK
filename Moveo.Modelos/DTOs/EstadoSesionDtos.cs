@@ -18,4 +18,5 @@ public class ResumenSesionDto
     public string Rol { get; set; } = string.Empty;
     public DateTime? UltimaConexion { get; set; }
     public bool EstaActivo { get; set; }
+    public string? ImagenUrl { get; set; }
 }

@@ -105,7 +105,8 @@ public class EstadisticaService : IEstadisticaService
             UsuarioId = u.UsuarioId,
             NombreUsuario = u.Usuario?.Nombre ?? "Usuario",
             Puntos = u.PuntosAcumulados,
-            EntregasTotales = u.EntregasExitosas
+            EntregasTotales = u.EntregasExitosas,
+            ImagenUrl = u.Usuario?.ImagenUrl
         });
     }
 

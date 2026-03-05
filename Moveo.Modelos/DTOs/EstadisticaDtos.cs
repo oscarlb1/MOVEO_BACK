@@ -16,6 +16,7 @@ public class RankingUsuarioDto
     public string NombreUsuario { get; set; } = string.Empty;
     public int Puntos { get; set; }
     public int EntregasTotales { get; set; }
+    public string? ImagenUrl { get; set; }
 }
 
 public class EstadisticaGlobalDto

@@ -78,7 +78,8 @@ public class EstadoSesionService : IEstadoSesionService
             NombreUsuario = u.Nombre,
             Rol = u.Rol,
             UltimaConexion = u.UltimaConexion,
-            EstaActivo = activas.Any(a => a.UsuarioId == u.Id)
+            EstaActivo = activas.Any(a => a.UsuarioId == u.Id),
+            ImagenUrl = u.ImagenUrl
         });
 
         if (!string.IsNullOrEmpty(rol))

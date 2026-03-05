@@ -50,5 +50,5 @@ jobs:
         run: dotnet test Moveo.Tests/Moveo.Tests.csproj --configuration Release --no-build --verbosity normal
 
       - name: Run Integration Tests
-        # Integrations tests con SQLite in-memory, corren sin dependencias extra
+        # Integrations tests con SQLite in-memory, corren sin dependencias  extra
         run: dotnet test Moveo.IntegrationTests/Moveo.IntegrationTests.csproj --configuration Release --no-build --verbosity normal

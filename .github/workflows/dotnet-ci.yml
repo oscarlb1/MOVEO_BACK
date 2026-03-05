@@ -1,0 +1,54 @@
+name: .NET CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main", "testing"]
+  pull_request:
+    branches: ["main", "testing"]
+
+jobs:
+  smoke-test:
+    name: "🚀 Smoke Test (Fail-Fast)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run Smoke Tests
+        # Corre únicamente los tests etiquetados como "Smoke"
+        run: dotnet test Moveo.IntegrationTests/Moveo.IntegrationTests.csproj --configuration Release --no-build --verbosity normal --filter "Category=Smoke"
+
+  full-test-suite:
+    name: "🧪 Full Test Suite"
+    needs: smoke-test # Depende de que el Smoke Test pase (Fail-Fast)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run Unit Tests
+        run: dotnet test Moveo.Tests/Moveo.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Run Integration Tests
+        # Integrations tests con SQLite in-memory, corren sin dependencias extra
+        run: dotnet test Moveo.IntegrationTests/Moveo.IntegrationTests.csproj --configuration Release --no-build --verbosity normal

@@ -1,6 +1,6 @@
 # MOVEO_BACK
 
-![.NET CI/CD Pipeline](https://github.com/USER/MOVEO_BACK/actions/workflows/dotnet-ci.yml/badge.svg)
+![.NET CI/CD Pipeline](https://github.com/oscarlb1/MOVEO_BACK/actions/workflows/dotnet-ci.yml/badge.svg)
 
 Backend API para el sistema de enrutamiento logístico y últimas millas MOVEO.
 

@@ -83,8 +83,16 @@ public class NotificacionesController : ControllerBase
     [Authorize(Roles = "REPARTIDOR")]
     public async Task<IActionResult> ReportarIncidencia(CrearNotificacionDto dto)
     {
-        // Forzamos el tipo a INCIDENCIA por seguridad
-        dto.Tipo = "INCIDENCIA";
+        // Usamos el Título para indicar que es una incidencia
+        if (string.IsNullOrEmpty(dto.Titulo)) 
+        {
+            dto.Titulo = "INCIDENCIA GLOBAL";
+        }
+        else 
+        {
+            dto.Titulo = "INCIDENCIA: " + dto.Titulo;
+        }
+        
         // Si el usuario reporta, broadcast informa a todos.
         await _notificacionService.EnviarABroadcastAsync(dto);
         return Ok(new { message = "Incidencia reportada correctamente" });

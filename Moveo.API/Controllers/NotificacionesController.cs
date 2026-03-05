@@ -77,6 +77,20 @@ public class NotificacionesController : ControllerBase
     }
 
     /// <summary>
+    /// Permite a un repartidor enviar una incidencia global o al administrador.
+    /// </summary>
+    [HttpPost("incidencia")]
+    [Authorize(Roles = "REPARTIDOR")]
+    public async Task<IActionResult> ReportarIncidencia(CrearNotificacionDto dto)
+    {
+        // Forzamos el tipo a INCIDENCIA por seguridad
+        dto.Tipo = "INCIDENCIA";
+        // Si el usuario reporta, broadcast informa a todos.
+        await _notificacionService.EnviarABroadcastAsync(dto);
+        return Ok(new { message = "Incidencia reportada correctamente" });
+    }
+
+    /// <summary>
     /// Marca una notificación como leída.
     /// </summary>
     [HttpPut("{id}/read")]

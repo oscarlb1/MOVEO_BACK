@@ -57,6 +57,7 @@ public class UsuarioService : IUsuarioService
             Email = createUserDto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password),
             Rol = createUserDto.Rol,
+            Telefono = createUserDto.Telefono,
             DebeCambiarPassword = true,
             FechaRegistro = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow,

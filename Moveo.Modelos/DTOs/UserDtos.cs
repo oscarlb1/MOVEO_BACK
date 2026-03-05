@@ -20,6 +20,7 @@ public class CrearUsuarioDto
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string Rol { get; set; } = "REPARTIDOR";
+    public string? Telefono { get; set; }
     public IFormFile? Imagen { get; set; }
 }
 

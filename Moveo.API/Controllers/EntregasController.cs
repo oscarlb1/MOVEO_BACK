@@ -129,4 +129,19 @@ public class EntregasController : ControllerBase
         var estadisticas = await _entregaService.ObtenerEstadisticasDelDiaAsync();
         return Ok(estadisticas);
     }
+
+    /// <summary>
+    /// Valida el código QR escaneado por el repartidor para una entrega específica.
+    /// </summary>
+    [HttpPost("{id}/validar-qr")]
+    public async Task<IActionResult> ValidarCodigoQR(int id, [FromBody] ValidarQrDto dto)
+    {
+        var esValido = await _entregaService.ValidarCodigoQRAsync(id, dto.CodigoQr);
+        if (esValido)
+        {
+            return Ok(new { message = "Código QR verificado correctamente." });
+        }
+
+        return BadRequest(new { message = "El código QR es incorrecto o no pertenece a esta entrega." });
+    }
 }

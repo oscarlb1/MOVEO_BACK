@@ -56,10 +56,10 @@ public class EntregaService : IEntregaService
         };
 
         await _entregaRepository.AgregarAsync(entrega);
-        
+
         // Cargar el cliente para el DTO de respuesta
         entrega.Cliente = cliente;
-        
+
         return MapToDto(entrega);
     }
 
@@ -85,7 +85,7 @@ public class EntregaService : IEntregaService
         entrega.UpdatedAt = DateTime.UtcNow;
 
         await _entregaRepository.ActualizarAsync(entrega);
-        
+
         entrega.Cliente = cliente;
         return MapToDto(entrega);
     }
@@ -103,7 +103,7 @@ public class EntregaService : IEntregaService
         if (!string.IsNullOrEmpty(dto.FirmaDigitalUrl)) entrega.FirmaDigitalUrl = dto.FirmaDigitalUrl;
         if (!string.IsNullOrEmpty(dto.Notas)) entrega.Notas = dto.Notas;
 
-        if (dto.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) || 
+        if (dto.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) ||
             dto.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase))
         {
             entrega.HoraEntregaReal = DateTime.UtcNow;
@@ -120,13 +120,13 @@ public class EntregaService : IEntregaService
     private async Task VerificarYFirmaRutaAsync(int rutaId)
     {
         var entregas = await _entregaRepository.ObtenerPorRutaAsync(rutaId);
-        
+
         // Si no hay entregas (raro), no hacemos nada
         if (!entregas.Any()) return;
 
         // Comprobar si todas las entregas están en un estado final (Entregado o Cancelado/Fallido)
-        bool todasFinalizadas = entregas.All(e => 
-            e.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase) || 
+        bool todasFinalizadas = entregas.All(e =>
+            e.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase) ||
             e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) ||
             e.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase) ||
             e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase)
@@ -153,12 +153,22 @@ public class EntregaService : IEntregaService
         var entregasHoy = await _entregaRepository.ObtenerDelDiaAsync(DateTime.UtcNow);
         var total = entregasHoy.Count();
         var pendientes = entregasHoy.Count(e => e.Estado.Equals("Pendiente", StringComparison.OrdinalIgnoreCase) || e.Estado.Equals("EnProgreso", StringComparison.OrdinalIgnoreCase));
-        var completadas = entregasHoy.Count(e => e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) || 
+        var completadas = entregasHoy.Count(e => e.Estado.Equals("Completado", StringComparison.OrdinalIgnoreCase) ||
                                                 e.Estado.Equals("Entregado", StringComparison.OrdinalIgnoreCase));
-        var fallidas = entregasHoy.Count(e => e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase) || 
+        var fallidas = entregasHoy.Count(e => e.Estado.Equals("Fallido", StringComparison.OrdinalIgnoreCase) ||
                                              e.Estado.Equals("Cancelado", StringComparison.OrdinalIgnoreCase));
 
         return new EntregaEstadisticasDto(total, pendientes, completadas, fallidas);
+    }
+
+    public async Task<bool> ValidarCodigoQRAsync(int idEntrega, string codigoQrEscaneado)
+    {
+        var entrega = await _entregaRepository.ObtenerPorIdAsync(idEntrega);
+        if (entrega == null)
+            return false;
+
+        bool coincide = entrega.CodigoQr?.Trim().Equals(codigoQrEscaneado?.Trim(), StringComparison.OrdinalIgnoreCase) ?? false;
+        return coincide;
     }
 
     private static EntregaDto MapToDto(Entrega e)

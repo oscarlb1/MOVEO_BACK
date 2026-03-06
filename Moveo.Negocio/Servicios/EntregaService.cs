@@ -161,14 +161,32 @@ public class EntregaService : IEntregaService
         return new EntregaEstadisticasDto(total, pendientes, completadas, fallidas);
     }
 
-    public async Task<bool> ValidarCodigoQRAsync(int idEntrega, string codigoQrEscaneado)
+    public async Task<bool> ValidarYAsignarQrAsync(int idEntrega, ValidarQrDto dto)
     {
+        // 1. Buscar la entrega
         var entrega = await _entregaRepository.ObtenerPorIdAsync(idEntrega);
         if (entrega == null)
-            return false;
+            throw new KeyNotFoundException($"No se encontró la entrega con ID {idEntrega}.");
 
-        bool coincide = entrega.CodigoQr?.Trim().Equals(codigoQrEscaneado?.Trim(), StringComparison.OrdinalIgnoreCase) ?? false;
-        return coincide;
+        string qrEscaneado = dto.CodigoQr?.Trim() ?? "";
+
+        // 2. Verificar si este QR ya existe en OTRA entrega (Unicidad)
+        bool existeEnOtraEntrega = await _entregaRepository.ExisteCodigoQrEnOtraEntregaAsync(idEntrega, qrEscaneado);
+
+        if (existeEnOtraEntrega)
+        {
+            throw new InvalidOperationException($"El código [{qrEscaneado}] ya está registrado en otra entrega. No se admiten duplicados.");
+        }
+
+        // 3. Asignación y guardado (De null a valor, o sobreescribir si es el mismo o permitido)
+        // NOTA PROFESIONAL: Solo asignamos el QR, NO cambiamos el estado a "Entregado" todavía.
+        // El estado se cambiará en el PodModal con la firma.
+        entrega.CodigoQr = qrEscaneado;
+        entrega.UpdatedAt = DateTime.UtcNow;
+
+        await _entregaRepository.ActualizarAsync(entrega);
+
+        return true;
     }
 
     private static EntregaDto MapToDto(Entrega e)

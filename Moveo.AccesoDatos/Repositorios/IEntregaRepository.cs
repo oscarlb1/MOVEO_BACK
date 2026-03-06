@@ -12,5 +12,7 @@ public interface IEntregaRepository
     Task ActualizarAsync(Entrega entrega);
     Task EliminarAsync(int id);
     Task<IEnumerable<Entrega>> ObtenerDelDiaAsync(DateTime fecha);
+    Task<bool> ExisteCodigoQrAsync(string codigoQr);
+    Task<bool> ExisteCodigoQrEnOtraEntregaAsync(int entregaIdActual, string codigoQr);
     Task GuardarCambiosAsync();
 }

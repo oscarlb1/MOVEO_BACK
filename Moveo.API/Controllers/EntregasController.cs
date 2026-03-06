@@ -132,16 +132,29 @@ public class EntregasController : ControllerBase
 
     /// <summary>
     /// Valida el código QR escaneado por el repartidor para una entrega específica.
+    /// Soporta asignación automática si la entrega aún no tiene QR.
     /// </summary>
     [HttpPost("{id}/validar-qr")]
     public async Task<IActionResult> ValidarCodigoQR(int id, [FromBody] ValidarQrDto dto)
     {
-        var esValido = await _entregaService.ValidarCodigoQRAsync(id, dto.CodigoQr);
-        if (esValido)
+        try
         {
-            return Ok(new { message = "Código QR verificado correctamente." });
-        }
+            await _entregaService.ValidarYAsignarQrAsync(id, dto);
 
-        return BadRequest(new { message = "El código QR es incorrecto o no pertenece a esta entrega." });
+            // Enviamos success: true para que React Native lo reconozca
+            return Ok(new
+            {
+                success = true,
+                message = "Código QR y firma guardados correctamente."
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { success = false, message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, message = "Error interno." });
+        }
     }
 }

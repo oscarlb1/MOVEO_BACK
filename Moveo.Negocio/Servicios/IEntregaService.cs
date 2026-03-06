@@ -12,5 +12,5 @@ public interface IEntregaService
     Task ActualizarEstadoAsync(int id, ActualizarEstadoEntregaDto actualizarEstadoDto);
     Task EliminarAsync(int id);
     Task<EntregaEstadisticasDto> ObtenerEstadisticasDelDiaAsync();
-    Task<bool> ValidarCodigoQRAsync(int idEntrega, string codigoQrEscaneado);
+    Task<bool> ValidarYAsignarQrAsync(int idEntrega, ValidarQrDto dto);
 }

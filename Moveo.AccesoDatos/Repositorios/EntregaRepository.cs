@@ -92,6 +92,18 @@ public class EntregaRepository : IEntregaRepository
             .ToListAsync();
     }
 
+    public async Task<bool> ExisteCodigoQrAsync(string codigoQr)
+    {
+        if (string.IsNullOrWhiteSpace(codigoQr)) return false;
+        return await _context.Entregas.AnyAsync(e => e.CodigoQr == codigoQr);
+    }
+
+    public async Task<bool> ExisteCodigoQrEnOtraEntregaAsync(int entregaIdActual, string codigoQr)
+    {
+        return await _context.Entregas
+            .AnyAsync(e => e.CodigoQr == codigoQr && e.Id != entregaIdActual);
+    }
+
     public async Task GuardarCambiosAsync()
     {
         await _context.SaveChangesAsync();

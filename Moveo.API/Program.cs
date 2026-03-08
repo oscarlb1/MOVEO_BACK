@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Moveo.AccesoDatos.Data;
 using Moveo.Modelos.Entidades;
-using Moveo.Negocio.Servicios;
+using Moveo.Negocio.Servicios; // Aquí vive SnsService
 using Moveo.AccesoDatos.Repositorios;
 using System.Text;
 using System.Security.Claims;
@@ -16,15 +16,13 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Cloudinary Settings Configuration
+// Configuración de Cloudinary
 builder.Services.Configure<CloudinarySettings>(
     builder.Configuration.GetSection("CloudinarySettings")
 );
 
-// Add services to the container.
-
+// Servicios base
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -43,11 +41,7 @@ builder.Services.AddSwaggerGen(c =>
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
                 Scheme = "oauth2",
                 Name = "Bearer",
                 In = ParameterLocation.Header
@@ -61,15 +55,17 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-// Configuración de CORS
+// --- CONFIGURACIÓN DE CORS ACTUALIZADA ---
+// Permitimos localhost para desarrollo y cualquier origen para el despliegue en K8s/Móvil
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowVueApp", policy =>
+    options.AddPolicy("AllowMoveoApps", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // La URL de tu Front en Vite
+        policy.AllowAnyOrigin() // En K8s es mejor AllowAnyOrigin para evitar bloqueos iniciales
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // Permitir el envío de cookies
+              .AllowAnyMethod();
+        // .AllowCredentials(); // Nota: AllowCredentials no funciona con AllowAnyOrigin. 
+        // Si usas cookies, deberás poner las URLs específicas aquí.
     });
 });
 
@@ -92,7 +88,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
 
-        // Configurar para leer el token de la cookie si no viene en el Header
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -103,6 +98,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// --- INYECCIÓN DE DEPENDENCIAS ---
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUploadService, CloudinaryUploadService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -130,28 +126,28 @@ builder.Services.AddScoped<IDistanciasService, DistanciasService>();
 builder.Services.AddScoped<IClimaService, ClimaService>();
 builder.Services.AddScoped<IIaOptimizationService, IaOptimizationService>();
 
+// REGISTRO DEL NUEVO SERVICIO DE AWS SNS
+builder.Services.AddScoped<SnsService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Pipeline de peticiones
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
-
-app.UseCors("AllowVueApp");
+// Activamos la política de CORS
+app.UseCors("AllowMoveoApps");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Middleware de seguimiento de actividad (después de auth para tener el usuario)
 app.UseUserActivity();
 
 app.MapControllers();
 
 app.Run();
 
-// Necesario para que WebApplicationFactory<Program> pueda encontrar el punto de entrada
 public partial class Program { }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Moveo.AccesoDatos.Data;
 using Moveo.Modelos.Entidades;
-using Moveo.Negocio.Servicios; // Aquí vive SnsService
+using Moveo.Negocio.Servicios;
 using Moveo.AccesoDatos.Repositorios;
 using System.Text;
 using System.Security.Claims;
@@ -55,17 +55,19 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-// --- CONFIGURACIÓN DE CORS ACTUALIZADA ---
-// Permitimos localhost para desarrollo y cualquier origen para el despliegue en K8s/Móvil
+// --- CONFIGURACIÓN DE CORS CORREGIDA PARA AWS ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMoveoApps", policy =>
     {
-        policy.AllowAnyOrigin() // En K8s es mejor AllowAnyOrigin para evitar bloqueos iniciales
+        policy.WithOrigins(
+                "http://a63ce610c81384d0aac363f106e1e943-224553327.us-east-1.elb.amazonaws.com", // Tu URL de Frontend en AWS
+                "http://localhost:5173", // Local para desarrollo (Vite suele usar este)
+                "http://localhost:3000"  // Local alternativo
+              )
               .AllowAnyHeader()
-              .AllowAnyMethod();
-        // .AllowCredentials(); // Nota: AllowCredentials no funciona con AllowAnyOrigin. 
-        // Si usas cookies, deberás poner las URLs específicas aquí.
+              .AllowAnyMethod()
+              .AllowCredentials(); // <--- AHORA SÍ FUNCIONA porque hemos definido orígenes específicos
     });
 });
 
@@ -126,7 +128,7 @@ builder.Services.AddScoped<IDistanciasService, DistanciasService>();
 builder.Services.AddScoped<IClimaService, ClimaService>();
 builder.Services.AddScoped<IIaOptimizationService, IaOptimizationService>();
 
-// REGISTRO DEL NUEVO SERVICIO DE AWS SNS
+// REGISTRO DEL SERVICIO DE AWS SNS
 builder.Services.AddScoped<SnsService>();
 
 var app = builder.Build();
@@ -138,7 +140,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Activamos la política de CORS
+// Activamos la política de CORS ANTES de Authentication/Authorization
 app.UseCors("AllowMoveoApps");
 
 app.UseAuthentication();

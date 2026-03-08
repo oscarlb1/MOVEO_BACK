@@ -55,19 +55,20 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-// --- CONFIGURACIÓN DE CORS CORREGIDA PARA AWS ---
+// --- CONFIGURACIÓN DE CORS ACTUALIZADA ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowMoveoApps", policy =>
     {
         policy.WithOrigins(
-                "http://a63ce610c81384d0aac363f106e1e943-224553327.us-east-1.elb.amazonaws.com", // Tu URL de Frontend en AWS
-                "http://localhost:5173", // Local para desarrollo (Vite suele usar este)
-                "http://localhost:3000"  // Local alternativo
+                "http://moveo-logistica.ddns.net", // <--- TU NUEVO DOMINIO (AÑADIDO)
+                "http://a63ce610c81384d0aac363f106e1e943-224553327.us-east-1.elb.amazonaws.com", // ELB Directo
+                "http://localhost:5173", // Desarrollo local
+                "http://localhost:3000"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // <--- AHORA SÍ FUNCIONA porque hemos definido orígenes específicos
+              .AllowCredentials();
     });
 });
 

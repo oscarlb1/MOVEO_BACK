@@ -66,7 +66,8 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000", // Local alternativo
                 "http://moveo-logistica.ddns.net",
                 "https://moveo-logistica.ddns.net",
-                "https://moveo-front-deru1iaq4-oscarlb1s-projects.vercel.app"
+                "https://moveo-front-deru1iaq4-oscarlb1s-projects.vercel.app",
+                "https://moveo-front.vercel.app"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()

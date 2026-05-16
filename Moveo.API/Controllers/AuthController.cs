@@ -80,11 +80,11 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("cerrar-sesion")]
-    public async Task<IActionResult> CerrarSesion(SolicitudCerrarSesionDto solicitudDto)
+    public async Task<IActionResult> CerrarSesion([FromBody] SolicitudCerrarSesionDto? solicitudDto)
     {
         try
         {
-            var tokenDeRefresco = solicitudDto.TokenDeRefresco;
+            var tokenDeRefresco = solicitudDto?.TokenDeRefresco;
 
             if (string.IsNullOrEmpty(tokenDeRefresco))
             {

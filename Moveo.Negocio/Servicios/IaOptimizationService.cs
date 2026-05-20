@@ -17,7 +17,7 @@ public class IaOptimizationService : IIaOptimizationService
     public IaOptimizationService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["Gemini:ApiKey"] ?? string.Empty;
+        _apiKey = configuration["API_KEY_GEMINI"] ?? Environment.GetEnvironmentVariable("API_KEY_GEMINI") ?? configuration["Gemini:ApiKey"] ?? string.Empty;
     }
 
     public async Task<OptimizacionIaResponseDto?> OptimizarRutaAsync(string prompt)
